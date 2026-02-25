@@ -1,0 +1,556 @@
+2026-02-25 09:30:56,563 - QuantAI_Gemini - INFO - DuckDB 数据库已连接: /home/Admin/quantAI_gemini/database/quant_gemini.duckdb
+2026-02-25 09:30:56,579 - QuantAI_Gemini - INFO - DuckDB 数据库已连接: /home/Admin/quantAI_gemini/database/quant_gemini.duckdb
+2026-02-25 09:30:56,579 - QuantAI_Gemini - INFO - 开始抓取 A 股全市场列表并过滤存续性（截至 2026-01-01）...
+2026-02-25 09:31:02,818 - QuantAI_Gemini - ERROR - 获取股票列表失败: ('Connection aborted.', ConnectionResetError(104, 'Connection reset by peer'))
+2026-02-25 09:31:02,819 - QuantAI_Gemini - INFO - DuckDB 数据库已连接: /home/Admin/quantAI_gemini/database/quant_gemini.duckdb
+2026-02-25 09:35:36,312 - QuantAI_Gemini - INFO - ==================================================
+2026-02-25 09:35:36,312 - QuantAI_Gemini - INFO - QuantAI Gemini 全流程量化工作流启动
+2026-02-25 09:35:36,312 - QuantAI_Gemini - INFO - ==================================================
+2026-02-25 09:35:36,321 - QuantAI_Gemini - INFO - DuckDB 数据库已连接: /home/Admin/quantAI_gemini/database/quant_gemini.duckdb
+2026-02-25 09:35:36,321 - QuantAI_Gemini - INFO - 正在获取全市场 A 股列表...
+2026-02-25 09:35:48,913 - QuantAI_Gemini - ERROR - 获取股票列表失败: ('Connection aborted.', RemoteDisconnected('Remote end closed connection without response'))
+2026-02-25 09:35:48,913 - QuantAI_Gemini - INFO - 测试股票池数量: 0
+2026-02-25 09:35:48,914 - QuantAI_Gemini - INFO - DuckDB 数据库已连接: /home/Admin/quantAI_gemini/database/quant_gemini.duckdb
+2026-02-25 09:35:48,927 - QuantAI_Gemini - ERROR - 工作流运行异常: Catalog Error: Table with name stock_daily does not exist!
+Did you mean "duckdb_constraints"?
+
+LINE 1: SELECT * FROM stock_daily WHERE date >= '2020-01-01'
+                      ^
+Traceback (most recent call last):
+  File "/home/Admin/quantAI_gemini/scripts/run_workflow.py", line 86, in <module>
+    run_full_pipeline()
+  File "/home/Admin/quantAI_gemini/scripts/run_workflow.py", line 39, in run_full_pipeline
+    factor_matrix = engine.get_factor_matrix(start_date="2020-01-01")
+                    ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/Admin/quantAI_gemini/src/factors/factor_engine.py", line 63, in get_factor_matrix
+    raw_df = self.load_clean_data(start_date, end_date)
+             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/Admin/quantAI_gemini/src/factors/factor_engine.py", line 27, in load_clean_data
+    df = self.db.read_query(query)
+         ^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/Admin/quantAI_gemini/src/data/database.py", line 53, in read_query
+    return self.conn.execute(query).df()
+           ^^^^^^^^^^^^^^^^^^^^^^^^
+_duckdb.CatalogException: Catalog Error: Table with name stock_daily does not exist!
+Did you mean "duckdb_constraints"?
+
+LINE 1: SELECT * FROM stock_daily WHERE date >= '2020-01-01'
+                      ^
+2026-02-25 09:42:17,715 - QuantAI_Gemini - INFO - ==================================================
+2026-02-25 09:42:17,716 - QuantAI_Gemini - INFO - QuantAI Gemini 全流程量化工作流启动
+2026-02-25 09:42:17,716 - QuantAI_Gemini - INFO - ==================================================
+2026-02-25 09:42:17,730 - QuantAI_Gemini - INFO - DuckDB 数据库已连接: /home/Admin/quantAI_gemini/database/quant_gemini.duckdb
+2026-02-25 09:42:32,079 - QuantAI_Gemini - INFO - BaoStock 登录成功。
+2026-02-25 09:42:32,079 - QuantAI_Gemini - INFO - 正在通过 BaoStock 获取全市场 A 股证券代码...
+2026-02-25 09:42:34,721 - QuantAI_Gemini - INFO - 成功获取 0 只 A 股证券代码。
+2026-02-25 09:42:34,721 - QuantAI_Gemini - INFO - 测试股票池数量: 0
+2026-02-25 09:42:34,722 - QuantAI_Gemini - INFO - DuckDB 数据库已连接: /home/Admin/quantAI_gemini/database/quant_gemini.duckdb
+2026-02-25 09:42:34,746 - QuantAI_Gemini - ERROR - 工作流运行异常: Catalog Error: Table with name stock_daily does not exist!
+Did you mean "duckdb_constraints"?
+
+LINE 1: SELECT * FROM stock_daily WHERE date >= '2020-01-01'
+                      ^
+Traceback (most recent call last):
+  File "/home/Admin/quantAI_gemini/scripts/run_workflow.py", line 86, in <module>
+    run_full_pipeline()
+  File "/home/Admin/quantAI_gemini/scripts/run_workflow.py", line 39, in run_full_pipeline
+    factor_matrix = engine.get_factor_matrix(start_date="2020-01-01")
+                    ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/Admin/quantAI_gemini/src/factors/factor_engine.py", line 63, in get_factor_matrix
+    raw_df = self.load_clean_data(start_date, end_date)
+             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/Admin/quantAI_gemini/src/factors/factor_engine.py", line 27, in load_clean_data
+    df = self.db.read_query(query)
+         ^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/Admin/quantAI_gemini/src/data/database.py", line 53, in read_query
+    return self.conn.execute(query).df()
+           ^^^^^^^^^^^^^^^^^^^^^^^^
+_duckdb.CatalogException: Catalog Error: Table with name stock_daily does not exist!
+Did you mean "duckdb_constraints"?
+
+LINE 1: SELECT * FROM stock_daily WHERE date >= '2020-01-01'
+                      ^
+2026-02-25 09:45:30,919 - QuantAI_Gemini - INFO - ==================================================
+2026-02-25 09:45:30,920 - QuantAI_Gemini - INFO - QuantAI Gemini 全流程量化工作流启动
+2026-02-25 09:45:30,920 - QuantAI_Gemini - INFO - ==================================================
+2026-02-25 09:45:30,929 - QuantAI_Gemini - INFO - DuckDB 数据库已连接: /home/Admin/quantAI_gemini/database/quant_gemini.duckdb
+2026-02-25 09:45:32,127 - QuantAI_Gemini - INFO - BaoStock 登录成功。
+2026-02-25 09:45:35,600 - QuantAI_Gemini - INFO - 检测到最近交易日: 2026-02-25
+2026-02-25 09:45:35,600 - QuantAI_Gemini - INFO - 正在获取 A 股列表 (基准日期: 2026-02-25)...
+2026-02-25 09:45:43,215 - QuantAI_Gemini - INFO - 成功获取 300 只 A 股证券代码。
+2026-02-25 09:45:43,215 - QuantAI_Gemini - INFO - 测试股票池数量: 100
+2026-02-25 09:45:43,215 - QuantAI_Gemini - INFO - DuckDB 数据库已连接: /home/Admin/quantAI_gemini/database/quant_gemini.duckdb
+2026-02-25 09:45:43,240 - QuantAI_Gemini - ERROR - 工作流运行异常: Catalog Error: Table with name stock_daily does not exist!
+Did you mean "duckdb_constraints"?
+
+LINE 1: SELECT * FROM stock_daily WHERE date >= '2020-01-01'
+                      ^
+Traceback (most recent call last):
+  File "/home/Admin/quantAI_gemini/scripts/run_workflow.py", line 86, in <module>
+    run_full_pipeline()
+  File "/home/Admin/quantAI_gemini/scripts/run_workflow.py", line 39, in run_full_pipeline
+    factor_matrix = engine.get_factor_matrix(start_date="2020-01-01")
+                    ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/Admin/quantAI_gemini/src/factors/factor_engine.py", line 63, in get_factor_matrix
+    raw_df = self.load_clean_data(start_date, end_date)
+             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/Admin/quantAI_gemini/src/factors/factor_engine.py", line 27, in load_clean_data
+    df = self.db.read_query(query)
+         ^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/Admin/quantAI_gemini/src/data/database.py", line 53, in read_query
+    return self.conn.execute(query).df()
+           ^^^^^^^^^^^^^^^^^^^^^^^^
+_duckdb.CatalogException: Catalog Error: Table with name stock_daily does not exist!
+Did you mean "duckdb_constraints"?
+
+LINE 1: SELECT * FROM stock_daily WHERE date >= '2020-01-01'
+                      ^
+2026-02-25 09:46:00,875 - QuantAI_Gemini - INFO - ==================================================
+2026-02-25 09:46:00,876 - QuantAI_Gemini - INFO - QuantAI Gemini 全流程量化工作流启动
+2026-02-25 09:46:00,876 - QuantAI_Gemini - INFO - ==================================================
+2026-02-25 09:46:00,886 - QuantAI_Gemini - INFO - DuckDB 数据库已连接: /home/Admin/quantAI_gemini/database/quant_gemini.duckdb
+2026-02-25 09:46:02,864 - QuantAI_Gemini - INFO - BaoStock 登录成功。
+2026-02-25 09:46:05,135 - QuantAI_Gemini - INFO - 检测到最近交易日: 2026-02-25
+2026-02-25 09:46:05,135 - QuantAI_Gemini - INFO - 正在获取 A 股列表 (基准日期: 2026-02-25)...
+2026-02-25 09:46:18,247 - QuantAI_Gemini - INFO - 成功获取 300 只 A 股证券代码。
+2026-02-25 09:46:18,248 - QuantAI_Gemini - INFO - 测试股票池数量: 100
+2026-02-25 09:46:18,248 - QuantAI_Gemini - INFO - 开始同步 100 只股票历史数据...
+2026-02-25 09:51:09,090 - QuantAI_Gemini - INFO - 数据已保存至表: stock_daily, 记录数: 349906
+2026-02-25 09:51:09,092 - QuantAI_Gemini - INFO - 进度: 100/100 | 已同步存续股: 100
+2026-02-25 09:51:09,482 - QuantAI_Gemini - INFO - 数据库连接已关闭
+2026-02-25 09:51:09,482 - QuantAI_Gemini - INFO - BaoStock 已登出，数据库已关闭。
+2026-02-25 09:51:09,498 - QuantAI_Gemini - INFO - DuckDB 数据库已连接: /home/Admin/quantAI_gemini/database/quant_gemini.duckdb
+2026-02-25 09:51:09,603 - QuantAI_Gemini - INFO - 数据加载完成，共计 144306 条记录。
+2026-02-25 09:51:09,666 - QuantAI_Gemini - INFO - 开始计算基础技术因子...
+2026-02-25 09:51:09,775 - QuantAI_Gemini - INFO - 开始进行因子横截面预处理 (去极值 & 标准化)...
+2026-02-25 09:51:13,416 - QuantAI_Gemini - INFO - 因子矩阵生成完成: (141765, 6)
+2026-02-25 09:51:13,542 - QuantAI_Gemini - INFO - 数据加载完成，共计 144306 条记录。
+2026-02-25 09:51:13,600 - QuantAI_Gemini - INFO - 基于线性加权生成多因子综合评分...
+2026-02-25 09:51:13,610 - QuantAI_Gemini - ERROR - 工作流运行异常: "['date'] not in index"
+Traceback (most recent call last):
+  File "/home/Admin/quantAI_gemini/scripts/run_workflow.py", line 86, in <module>
+    run_full_pipeline()
+  File "/home/Admin/quantAI_gemini/scripts/run_workflow.py", line 54, in run_full_pipeline
+    signals = strat.generate_signals(factor_matrix)
+              ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/Admin/quantAI_gemini/src/strategy/strategy_base.py", line 66, in generate_signals
+    return score_df[['date', 'symbol', 'signal_score']]
+           ~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/root/.local/lib/python3.12/site-packages/pandas/core/frame.py", line 4384, in __getitem__
+    indexer = self.columns._get_indexer_strict(key, "columns")[1]
+              ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/root/.local/lib/python3.12/site-packages/pandas/core/indexes/base.py", line 6302, in _get_indexer_strict
+    self._raise_if_missing(keyarr, indexer, axis_name)
+  File "/root/.local/lib/python3.12/site-packages/pandas/core/indexes/base.py", line 6355, in _raise_if_missing
+    raise KeyError(f"{not_found} not in index")
+KeyError: "['date'] not in index"
+2026-02-25 09:55:55,850 - QuantAI_Gemini - INFO - ==================================================
+2026-02-25 09:55:55,851 - QuantAI_Gemini - INFO - QuantAI Gemini 全流程量化工作流启动
+2026-02-25 09:55:55,851 - QuantAI_Gemini - INFO - ==================================================
+2026-02-25 09:55:55,862 - QuantAI_Gemini - INFO - DuckDB 数据库已连接: /home/Admin/quantAI_gemini/database/quant_gemini.duckdb
+2026-02-25 09:55:56,442 - QuantAI_Gemini - INFO - BaoStock 登录成功。
+2026-02-25 09:55:57,049 - QuantAI_Gemini - INFO - 检测到最近交易日: 2026-02-25
+2026-02-25 09:55:57,049 - QuantAI_Gemini - INFO - 正在获取 A 股列表 (基准日期: 2026-02-25)...
+2026-02-25 09:55:57,831 - QuantAI_Gemini - INFO - 成功获取 300 只 A 股证券代码。
+2026-02-25 09:55:57,832 - QuantAI_Gemini - INFO - 测试股票池数量: 100
+2026-02-25 09:55:58,121 - QuantAI_Gemini - INFO - 数据库连接已关闭
+2026-02-25 09:55:58,121 - QuantAI_Gemini - INFO - BaoStock 已登出，数据库已关闭。
+2026-02-25 09:55:58,131 - QuantAI_Gemini - INFO - DuckDB 数据库已连接: /home/Admin/quantAI_gemini/database/quant_gemini.duckdb
+2026-02-25 09:55:58,265 - QuantAI_Gemini - INFO - 数据加载完成，共计 144306 条记录。
+2026-02-25 09:55:58,312 - QuantAI_Gemini - INFO - 开始计算基础技术因子...
+2026-02-25 09:55:58,413 - QuantAI_Gemini - INFO - 开始进行因子横截面预处理 (去极值 & 标准化)...
+2026-02-25 09:56:02,138 - QuantAI_Gemini - INFO - 因子矩阵生成完成: (141765, 6)
+2026-02-25 09:56:02,220 - QuantAI_Gemini - INFO - 数据加载完成，共计 144306 条记录。
+2026-02-25 09:56:02,239 - QuantAI_Gemini - INFO - 基于线性加权生成多因子综合评分...
+2026-02-25 09:56:02,243 - QuantAI_Gemini - ERROR - 工作流运行异常: "['date'] not in index"
+Traceback (most recent call last):
+  File "/home/Admin/quantAI_gemini/scripts/run_workflow.py", line 86, in <module>
+    run_full_pipeline()
+  File "/home/Admin/quantAI_gemini/scripts/run_workflow.py", line 54, in run_full_pipeline
+    signals = strat.generate_signals(factor_matrix)
+              ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/Admin/quantAI_gemini/src/strategy/strategy_base.py", line 66, in generate_signals
+    return score_df[['date', 'symbol', 'signal_score']]
+           ~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/root/.local/lib/python3.12/site-packages/pandas/core/frame.py", line 4384, in __getitem__
+    indexer = self.columns._get_indexer_strict(key, "columns")[1]
+              ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/root/.local/lib/python3.12/site-packages/pandas/core/indexes/base.py", line 6302, in _get_indexer_strict
+    self._raise_if_missing(keyarr, indexer, axis_name)
+  File "/root/.local/lib/python3.12/site-packages/pandas/core/indexes/base.py", line 6355, in _raise_if_missing
+    raise KeyError(f"{not_found} not in index")
+KeyError: "['date'] not in index"
+2026-02-25 09:56:14,395 - QuantAI_Gemini - INFO - ==================================================
+2026-02-25 09:56:14,395 - QuantAI_Gemini - INFO - QuantAI Gemini 全流程量化工作流启动
+2026-02-25 09:56:14,395 - QuantAI_Gemini - INFO - ==================================================
+2026-02-25 09:56:14,408 - QuantAI_Gemini - INFO - DuckDB 数据库已连接: /home/Admin/quantAI_gemini/database/quant_gemini.duckdb
+2026-02-25 09:56:15,007 - QuantAI_Gemini - INFO - BaoStock 登录成功。
+2026-02-25 09:56:15,573 - QuantAI_Gemini - INFO - 检测到最近交易日: 2026-02-25
+2026-02-25 09:56:15,573 - QuantAI_Gemini - INFO - 正在获取 A 股列表 (基准日期: 2026-02-25)...
+2026-02-25 09:56:17,768 - QuantAI_Gemini - INFO - 成功获取 300 只 A 股证券代码。
+2026-02-25 09:56:17,768 - QuantAI_Gemini - INFO - 测试股票池数量: 100
+2026-02-25 09:56:19,050 - QuantAI_Gemini - INFO - 数据库连接已关闭
+2026-02-25 09:56:19,050 - QuantAI_Gemini - INFO - BaoStock 已登出，数据库已关闭。
+2026-02-25 09:56:19,061 - QuantAI_Gemini - INFO - DuckDB 数据库已连接: /home/Admin/quantAI_gemini/database/quant_gemini.duckdb
+2026-02-25 09:56:19,211 - QuantAI_Gemini - INFO - 数据加载完成，共计 144306 条记录。
+2026-02-25 09:56:19,258 - QuantAI_Gemini - INFO - 开始计算基础技术因子...
+2026-02-25 09:56:19,370 - QuantAI_Gemini - INFO - 开始进行因子横截面预处理...
+2026-02-25 09:56:24,218 - QuantAI_Gemini - INFO - 因子矩阵生成完成: (141765, 6)
+2026-02-25 09:56:24,323 - QuantAI_Gemini - INFO - 数据加载完成，共计 144306 条记录。
+2026-02-25 09:56:26,186 - QuantAI_Gemini - INFO - 基于线性加权生成多因子综合评分...
+2026-02-25 09:56:26,354 - QuantAI_Gemini - ERROR - 工作流运行异常: "['date'] not in index"
+Traceback (most recent call last):
+  File "/home/Admin/quantAI_gemini/scripts/run_workflow.py", line 86, in <module>
+    run_full_pipeline()
+  File "/home/Admin/quantAI_gemini/scripts/run_workflow.py", line 54, in run_full_pipeline
+    signals = strat.generate_signals(factor_matrix)
+              ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/Admin/quantAI_gemini/src/strategy/strategy_base.py", line 66, in generate_signals
+    return score_df[['date', 'symbol', 'signal_score']]
+           ~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/root/.local/lib/python3.12/site-packages/pandas/core/frame.py", line 4384, in __getitem__
+    indexer = self.columns._get_indexer_strict(key, "columns")[1]
+              ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/root/.local/lib/python3.12/site-packages/pandas/core/indexes/base.py", line 6302, in _get_indexer_strict
+    self._raise_if_missing(keyarr, indexer, axis_name)
+  File "/root/.local/lib/python3.12/site-packages/pandas/core/indexes/base.py", line 6355, in _raise_if_missing
+    raise KeyError(f"{not_found} not in index")
+KeyError: "['date'] not in index"
+2026-02-25 10:01:36,245 - QuantAI_Gemini - INFO - ==================================================
+2026-02-25 10:01:36,246 - QuantAI_Gemini - INFO - QuantAI Gemini 全流程量化工作流启动
+2026-02-25 10:01:36,246 - QuantAI_Gemini - INFO - ==================================================
+2026-02-25 10:01:36,271 - QuantAI_Gemini - INFO - DuckDB 数据库已连接: /home/Admin/quantAI_gemini/database/quant_gemini.duckdb
+2026-02-25 10:01:41,048 - QuantAI_Gemini - INFO - BaoStock 登录成功。
+2026-02-25 10:01:41,934 - QuantAI_Gemini - INFO - 检测到最近交易日: 2026-02-25
+2026-02-25 10:01:41,934 - QuantAI_Gemini - INFO - 正在获取 A 股列表 (基准日期: 2026-02-25)...
+2026-02-25 10:01:43,010 - QuantAI_Gemini - INFO - 成功获取 300 只 A 股证券代码。
+2026-02-25 10:01:43,011 - QuantAI_Gemini - INFO - 测试股票池数量: 100
+2026-02-25 10:01:43,411 - QuantAI_Gemini - INFO - 数据库连接已关闭
+2026-02-25 10:01:43,411 - QuantAI_Gemini - INFO - BaoStock 已登出，数据库已关闭。
+2026-02-25 10:01:43,421 - QuantAI_Gemini - INFO - DuckDB 数据库已连接: /home/Admin/quantAI_gemini/database/quant_gemini.duckdb
+2026-02-25 10:01:43,572 - QuantAI_Gemini - INFO - 数据加载完成，共计 144306 条记录。
+2026-02-25 10:01:43,618 - QuantAI_Gemini - INFO - 开始计算基础技术因子...
+2026-02-25 10:01:43,728 - QuantAI_Gemini - INFO - 开始进行因子横截面预处理...
+2026-02-25 10:01:48,359 - QuantAI_Gemini - INFO - 最终因子矩阵列名: ['index', 'symbol', 'mom_5', 'mom_20', 'vol_20', 'bias_20', 'vol_ratio']
+2026-02-25 10:01:48,363 - QuantAI_Gemini - INFO - 因子矩阵生成完成: (141765, 7)
+2026-02-25 10:01:48,578 - QuantAI_Gemini - INFO - 数据加载完成，共计 144306 条记录。
+2026-02-25 10:01:50,850 - QuantAI_Gemini - INFO - 基于线性加权生成多因子综合评分...
+2026-02-25 10:01:50,998 - QuantAI_Gemini - ERROR - 工作流运行异常: "['date'] not in index"
+Traceback (most recent call last):
+  File "/home/Admin/quantAI_gemini/scripts/run_workflow.py", line 86, in <module>
+    run_full_pipeline()
+  File "/home/Admin/quantAI_gemini/scripts/run_workflow.py", line 54, in run_full_pipeline
+    signals = strat.generate_signals(factor_matrix)
+              ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/Admin/quantAI_gemini/src/strategy/strategy_base.py", line 66, in generate_signals
+    return score_df[['date', 'symbol', 'signal_score']]
+           ~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/root/.local/lib/python3.12/site-packages/pandas/core/frame.py", line 4384, in __getitem__
+    indexer = self.columns._get_indexer_strict(key, "columns")[1]
+              ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/root/.local/lib/python3.12/site-packages/pandas/core/indexes/base.py", line 6302, in _get_indexer_strict
+    self._raise_if_missing(keyarr, indexer, axis_name)
+  File "/root/.local/lib/python3.12/site-packages/pandas/core/indexes/base.py", line 6355, in _raise_if_missing
+    raise KeyError(f"{not_found} not in index")
+KeyError: "['date'] not in index"
+2026-02-25 10:02:03,767 - QuantAI_Gemini - INFO - ==================================================
+2026-02-25 10:02:03,767 - QuantAI_Gemini - INFO - QuantAI Gemini 全流程量化工作流启动
+2026-02-25 10:02:03,767 - QuantAI_Gemini - INFO - ==================================================
+2026-02-25 10:02:03,789 - QuantAI_Gemini - INFO - DuckDB 数据库已连接: /home/Admin/quantAI_gemini/database/quant_gemini.duckdb
+2026-02-25 10:02:04,366 - QuantAI_Gemini - INFO - BaoStock 登录成功。
+2026-02-25 10:02:04,994 - QuantAI_Gemini - INFO - 检测到最近交易日: 2026-02-25
+2026-02-25 10:02:04,994 - QuantAI_Gemini - INFO - 正在获取 A 股列表 (基准日期: 2026-02-25)...
+2026-02-25 10:02:07,224 - QuantAI_Gemini - INFO - 成功获取 300 只 A 股证券代码。
+2026-02-25 10:02:07,224 - QuantAI_Gemini - INFO - 测试股票池数量: 100
+2026-02-25 10:02:07,602 - QuantAI_Gemini - INFO - 数据库连接已关闭
+2026-02-25 10:02:07,602 - QuantAI_Gemini - INFO - BaoStock 已登出，数据库已关闭。
+2026-02-25 10:02:07,614 - QuantAI_Gemini - INFO - DuckDB 数据库已连接: /home/Admin/quantAI_gemini/database/quant_gemini.duckdb
+2026-02-25 10:02:07,774 - QuantAI_Gemini - INFO - 数据加载完成，共计 144306 条记录。
+2026-02-25 10:02:07,824 - QuantAI_Gemini - INFO - 开始计算基础技术因子...
+2026-02-25 10:02:07,932 - QuantAI_Gemini - INFO - 开始进行因子横截面预处理...
+2026-02-25 10:02:12,810 - QuantAI_Gemini - INFO - 最终因子矩阵列名: ['date', 'symbol', 'mom_5', 'mom_20', 'vol_20', 'bias_20', 'vol_ratio']
+2026-02-25 10:02:12,811 - QuantAI_Gemini - INFO - 因子矩阵生成完成: (141765, 7)
+2026-02-25 10:04:44,152 - QuantAI_Gemini - INFO - 数据加载完成，共计 144306 条记录。
+2026-02-25 10:04:44,964 - QuantAI_Gemini - INFO - 基于线性加权生成多因子综合评分...
+2026-02-25 10:04:45,001 - QuantAI_Gemini - INFO - 计算目标持仓，每期选股数量: 10
+2026-02-25 10:04:45,073 - QuantAI_Gemini - INFO - 开始向量化回测流程...
+2026-02-25 10:04:45,090 - QuantAI_Gemini - ERROR - 工作流运行异常: You are trying to merge on datetime64[us] and int64 columns for key 'date'. If you wish to proceed you should use pd.concat
+Traceback (most recent call last):
+  File "/home/Admin/quantAI_gemini/scripts/run_workflow.py", line 86, in <module>
+    run_full_pipeline()
+  File "/home/Admin/quantAI_gemini/scripts/run_workflow.py", line 61, in run_full_pipeline
+    perf, nav = bt.run_vectorized_backtest(positions, price_df)
+                ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/Admin/quantAI_gemini/src/backtest/backtest_engine.py", line 31, in run_vectorized_backtest
+    backtest_df = pd.merge(price_df, positions, on=['date', 'symbol'], how='left')
+                  ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/root/.local/lib/python3.12/site-packages/pandas/core/reshape/merge.py", line 385, in merge
+    op = _MergeOperation(
+         ^^^^^^^^^^^^^^^^
+  File "/root/.local/lib/python3.12/site-packages/pandas/core/reshape/merge.py", line 1031, in __init__
+    self._maybe_coerce_merge_keys()
+  File "/root/.local/lib/python3.12/site-packages/pandas/core/reshape/merge.py", line 1839, in _maybe_coerce_merge_keys
+    raise ValueError(msg)
+ValueError: You are trying to merge on datetime64[us] and int64 columns for key 'date'. If you wish to proceed you should use pd.concat
+2026-02-25 10:05:36,989 - QuantAI_Gemini - INFO - ==================================================
+2026-02-25 10:05:36,989 - QuantAI_Gemini - INFO - QuantAI Gemini 全流程量化工作流启动
+2026-02-25 10:05:36,990 - QuantAI_Gemini - INFO - ==================================================
+2026-02-25 10:05:37,007 - QuantAI_Gemini - INFO - DuckDB 数据库已连接: /home/Admin/quantAI_gemini/database/quant_gemini.duckdb
+2026-02-25 10:05:37,434 - QuantAI_Gemini - INFO - BaoStock 登录成功。
+2026-02-25 10:05:37,917 - QuantAI_Gemini - INFO - 检测到最近交易日: 2026-02-25
+2026-02-25 10:05:37,917 - QuantAI_Gemini - INFO - 正在获取 A 股列表 (基准日期: 2026-02-25)...
+2026-02-25 10:05:38,720 - QuantAI_Gemini - INFO - 成功获取 300 只 A 股证券代码。
+2026-02-25 10:05:38,720 - QuantAI_Gemini - INFO - 测试股票池数量: 100
+2026-02-25 10:05:38,937 - QuantAI_Gemini - INFO - 数据库连接已关闭
+2026-02-25 10:05:38,937 - QuantAI_Gemini - INFO - BaoStock 已登出，数据库已关闭。
+2026-02-25 10:05:38,947 - QuantAI_Gemini - INFO - DuckDB 数据库已连接: /home/Admin/quantAI_gemini/database/quant_gemini.duckdb
+2026-02-25 10:05:39,085 - QuantAI_Gemini - INFO - 数据加载完成，共计 144306 条记录。
+2026-02-25 10:05:39,130 - QuantAI_Gemini - INFO - 开始计算基础技术因子...
+2026-02-25 10:05:39,234 - QuantAI_Gemini - INFO - 开始进行因子横截面预处理...
+2026-02-25 10:05:43,985 - QuantAI_Gemini - INFO - 最终因子矩阵列名: ['date', 'symbol', 'mom_5', 'mom_20', 'vol_20', 'bias_20', 'vol_ratio']
+2026-02-25 10:05:43,986 - QuantAI_Gemini - INFO - 因子矩阵生成完成: (141765, 7)
+2026-02-25 10:05:44,066 - QuantAI_Gemini - INFO - 数据加载完成，共计 144306 条记录。
+2026-02-25 10:05:44,098 - QuantAI_Gemini - INFO - 基于线性加权生成多因子综合评分...
+2026-02-25 10:05:44,103 - QuantAI_Gemini - INFO - 计算目标持仓，每期选股数量: 10
+2026-02-25 10:05:44,136 - QuantAI_Gemini - INFO - 开始向量化回测流程...
+2026-02-25 10:05:44,215 - QuantAI_Gemini - INFO - 回测绩效统计: {'Cumulative Return': '0.00%', 'Annual Return': '0.00%', 'Max Drawdown': '0.00%', 'Volatility': '0.00%', 'Sharpe Ratio': '0.00', 'Calmar Ratio': '0.00'}
+2026-02-25 10:05:44,218 - QuantAI_Gemini - INFO - 生成周期性报告 (频率: QE)...
+2026-02-25 10:05:44,225 - QuantAI_Gemini - INFO - ==================================================
+2026-02-25 10:05:44,225 - QuantAI_Gemini - INFO - 策略绩效汇总报告 (2020-01-01 至今):
+2026-02-25 10:05:44,225 - QuantAI_Gemini - INFO - Cumulative Return: 0.00%
+2026-02-25 10:05:44,225 - QuantAI_Gemini - INFO - Annual Return: 0.00%
+2026-02-25 10:05:44,225 - QuantAI_Gemini - INFO - Max Drawdown: 0.00%
+2026-02-25 10:05:44,225 - QuantAI_Gemini - INFO - Volatility: 0.00%
+2026-02-25 10:05:44,225 - QuantAI_Gemini - INFO - Sharpe Ratio: 0.00
+2026-02-25 10:05:44,225 - QuantAI_Gemini - INFO - Calmar Ratio: 0.00
+2026-02-25 10:05:44,225 - QuantAI_Gemini - INFO - ==================================================
+2026-02-25 10:05:44,230 - QuantAI_Gemini - INFO - 净值曲线已保存至: /home/Admin/quantAI_gemini/reports/portfolio_nav.csv
+2026-02-25 10:05:44,238 - QuantAI_Gemini - INFO - 数据库连接已关闭
+2026-02-25 10:06:30,181 - QuantAI_Gemini - INFO - ==================================================
+2026-02-25 10:06:30,181 - QuantAI_Gemini - INFO - QuantAI Gemini 全流程量化工作流启动
+2026-02-25 10:06:30,181 - QuantAI_Gemini - INFO - ==================================================
+2026-02-25 10:06:30,195 - QuantAI_Gemini - INFO - DuckDB 数据库已连接: /home/Admin/quantAI_gemini/database/quant_gemini.duckdb
+2026-02-25 10:06:33,669 - QuantAI_Gemini - INFO - BaoStock 登录成功。
+2026-02-25 10:06:35,293 - QuantAI_Gemini - INFO - 检测到最近交易日: 2026-02-25
+2026-02-25 10:06:35,293 - QuantAI_Gemini - INFO - 正在获取 A 股列表 (基准日期: 2026-02-25)...
+2026-02-25 10:06:37,230 - QuantAI_Gemini - INFO - 成功获取 300 只 A 股证券代码。
+2026-02-25 10:06:37,230 - QuantAI_Gemini - INFO - 测试股票池数量: 100
+2026-02-25 10:06:37,443 - QuantAI_Gemini - INFO - 数据库连接已关闭
+2026-02-25 10:06:37,443 - QuantAI_Gemini - INFO - BaoStock 已登出，数据库已关闭。
+2026-02-25 10:06:37,455 - QuantAI_Gemini - INFO - DuckDB 数据库已连接: /home/Admin/quantAI_gemini/database/quant_gemini.duckdb
+2026-02-25 10:06:37,617 - QuantAI_Gemini - INFO - 数据加载完成，共计 144306 条记录。
+2026-02-25 10:06:37,667 - QuantAI_Gemini - INFO - 开始计算基础技术因子...
+2026-02-25 10:06:37,802 - QuantAI_Gemini - INFO - 开始进行因子横截面预处理...
+2026-02-25 10:06:42,568 - QuantAI_Gemini - INFO - 最终因子矩阵列名: ['date', 'symbol', 'mom_5', 'mom_20', 'vol_20', 'bias_20', 'vol_ratio']
+2026-02-25 10:06:42,569 - QuantAI_Gemini - INFO - 因子矩阵生成完成: (141765, 7)
+2026-02-25 10:06:48,040 - QuantAI_Gemini - INFO - 数据加载完成，共计 144306 条记录。
+2026-02-25 10:06:52,245 - QuantAI_Gemini - INFO - 基于线性加权生成多因子综合评分...
+2026-02-25 10:06:52,361 - QuantAI_Gemini - INFO - 计算目标持仓，每期选股数量: 10
+2026-02-25 10:06:52,494 - QuantAI_Gemini - INFO - 开始向量化回测流程...
+2026-02-25 10:07:00,254 - QuantAI_Gemini - INFO - 回测绩效统计: {'Cumulative Return': '0.00%', 'Annual Return': '0.00%', 'Max Drawdown': '0.00%', 'Volatility': '0.00%', 'Sharpe Ratio': '0.00', 'Calmar Ratio': '0.00'}
+2026-02-25 10:07:00,353 - QuantAI_Gemini - INFO - 生成周期性报告 (频率: QE)...
+2026-02-25 10:07:15,560 - QuantAI_Gemini - INFO - ==================================================
+2026-02-25 10:07:15,636 - QuantAI_Gemini - INFO - 策略绩效汇总报告 (2020-01-01 至今):
+2026-02-25 10:07:15,636 - QuantAI_Gemini - INFO - Cumulative Return: 0.00%
+2026-02-25 10:07:15,636 - QuantAI_Gemini - INFO - Annual Return: 0.00%
+2026-02-25 10:07:15,636 - QuantAI_Gemini - INFO - Max Drawdown: 0.00%
+2026-02-25 10:07:15,636 - QuantAI_Gemini - INFO - Volatility: 0.00%
+2026-02-25 10:07:15,636 - QuantAI_Gemini - INFO - Sharpe Ratio: 0.00
+2026-02-25 10:07:15,637 - QuantAI_Gemini - INFO - Calmar Ratio: 0.00
+2026-02-25 10:07:15,637 - QuantAI_Gemini - INFO - ==================================================
+2026-02-25 10:07:20,494 - QuantAI_Gemini - INFO - 净值曲线已保存至: /home/Admin/quantAI_gemini/reports/portfolio_nav.csv
+2026-02-25 10:07:21,245 - QuantAI_Gemini - INFO - 数据库连接已关闭
+2026-02-25 10:07:40,561 - QuantAI_Gemini - INFO - ==================================================
+2026-02-25 10:07:40,561 - QuantAI_Gemini - INFO - QuantAI Gemini 全流程量化工作流启动
+2026-02-25 10:07:40,561 - QuantAI_Gemini - INFO - ==================================================
+2026-02-25 10:07:40,607 - QuantAI_Gemini - INFO - DuckDB 数据库已连接: /home/Admin/quantAI_gemini/database/quant_gemini.duckdb
+2026-02-25 10:07:41,123 - QuantAI_Gemini - INFO - BaoStock 登录成功。
+2026-02-25 10:07:41,550 - QuantAI_Gemini - INFO - 检测到最近交易日: 2026-02-25
+2026-02-25 10:07:41,550 - QuantAI_Gemini - INFO - 正在获取 A 股列表 (基准日期: 2026-02-25)...
+2026-02-25 10:07:42,244 - QuantAI_Gemini - INFO - 成功获取 300 只 A 股证券代码。
+2026-02-25 10:07:42,245 - QuantAI_Gemini - INFO - 测试股票池数量: 100
+2026-02-25 10:07:42,461 - QuantAI_Gemini - INFO - 数据库连接已关闭
+2026-02-25 10:07:42,461 - QuantAI_Gemini - INFO - BaoStock 已登出，数据库已关闭。
+2026-02-25 10:07:42,472 - QuantAI_Gemini - INFO - DuckDB 数据库已连接: /home/Admin/quantAI_gemini/database/quant_gemini.duckdb
+2026-02-25 10:07:42,620 - QuantAI_Gemini - INFO - 数据加载完成，共计 144306 条记录。
+2026-02-25 10:07:42,664 - QuantAI_Gemini - INFO - 开始计算基础技术因子...
+2026-02-25 10:07:42,767 - QuantAI_Gemini - INFO - 开始进行因子横截面预处理...
+2026-02-25 10:07:47,605 - QuantAI_Gemini - INFO - 最终因子矩阵列名: ['date', 'symbol', 'mom_5', 'mom_20', 'vol_20', 'bias_20', 'vol_ratio']
+2026-02-25 10:07:47,605 - QuantAI_Gemini - INFO - 因子矩阵生成完成: (141765, 7)
+2026-02-25 10:07:48,547 - QuantAI_Gemini - INFO - 数据加载完成，共计 144306 条记录。
+2026-02-25 10:07:49,640 - QuantAI_Gemini - INFO - 基于线性加权生成多因子综合评分...
+2026-02-25 10:07:49,831 - QuantAI_Gemini - INFO - 信号样例:
+   date     symbol  signal_score
+0     0  sh.600000      0.138752
+1     1  sh.600000     -0.071166
+2     2  sh.600000     -0.096647
+3     3  sh.600000     -0.120745
+4     4  sh.600000     -0.141043
+2026-02-25 10:07:49,831 - QuantAI_Gemini - INFO - 计算目标持仓，每期选股数量: 10
+2026-02-25 10:07:49,872 - QuantAI_Gemini - INFO - 持仓样例:
+   date     symbol  target_weight
+0     0  sh.600000            0.1
+1     1  sh.600000            0.1
+2     2  sh.600000            0.1
+3     3  sh.600000            0.1
+4     4  sh.600000            0.1
+2026-02-25 10:07:49,872 - QuantAI_Gemini - INFO - 总持仓记录数: 141765
+2026-02-25 10:07:49,872 - QuantAI_Gemini - INFO - 开始向量化回测流程...
+2026-02-25 10:07:50,026 - QuantAI_Gemini - INFO - 回测绩效统计: {'Cumulative Return': '0.00%', 'Annual Return': '0.00%', 'Max Drawdown': '0.00%', 'Volatility': '0.00%', 'Sharpe Ratio': '0.00', 'Calmar Ratio': '0.00'}
+2026-02-25 10:07:50,058 - QuantAI_Gemini - INFO - 生成周期性报告 (频率: QE)...
+2026-02-25 10:07:50,071 - QuantAI_Gemini - INFO - ==================================================
+2026-02-25 10:07:50,071 - QuantAI_Gemini - INFO - 策略绩效汇总报告 (2020-01-01 至今):
+2026-02-25 10:07:50,071 - QuantAI_Gemini - INFO - Cumulative Return: 0.00%
+2026-02-25 10:07:50,071 - QuantAI_Gemini - INFO - Annual Return: 0.00%
+2026-02-25 10:07:50,071 - QuantAI_Gemini - INFO - Max Drawdown: 0.00%
+2026-02-25 10:07:50,071 - QuantAI_Gemini - INFO - Volatility: 0.00%
+2026-02-25 10:07:50,071 - QuantAI_Gemini - INFO - Sharpe Ratio: 0.00
+2026-02-25 10:07:50,071 - QuantAI_Gemini - INFO - Calmar Ratio: 0.00
+2026-02-25 10:07:50,071 - QuantAI_Gemini - INFO - ==================================================
+2026-02-25 10:07:50,077 - QuantAI_Gemini - INFO - 净值曲线已保存至: /home/Admin/quantAI_gemini/reports/portfolio_nav.csv
+2026-02-25 10:07:50,530 - QuantAI_Gemini - INFO - 数据库连接已关闭
+2026-02-25 10:08:16,398 - QuantAI_Gemini - INFO - ==================================================
+2026-02-25 10:08:16,398 - QuantAI_Gemini - INFO - QuantAI Gemini 全流程量化工作流启动
+2026-02-25 10:08:16,399 - QuantAI_Gemini - INFO - ==================================================
+2026-02-25 10:08:16,410 - QuantAI_Gemini - INFO - DuckDB 数据库已连接: /home/Admin/quantAI_gemini/database/quant_gemini.duckdb
+2026-02-25 10:08:16,905 - QuantAI_Gemini - INFO - BaoStock 登录成功。
+2026-02-25 10:08:17,337 - QuantAI_Gemini - INFO - 检测到最近交易日: 2026-02-25
+2026-02-25 10:08:17,337 - QuantAI_Gemini - INFO - 正在获取 A 股列表 (基准日期: 2026-02-25)...
+2026-02-25 10:08:18,662 - QuantAI_Gemini - INFO - 成功获取 300 只 A 股证券代码。
+2026-02-25 10:08:18,662 - QuantAI_Gemini - INFO - 测试股票池数量: 100
+2026-02-25 10:08:18,928 - QuantAI_Gemini - INFO - 数据库连接已关闭
+2026-02-25 10:08:18,928 - QuantAI_Gemini - INFO - BaoStock 已登出，数据库已关闭。
+2026-02-25 10:08:18,939 - QuantAI_Gemini - INFO - DuckDB 数据库已连接: /home/Admin/quantAI_gemini/database/quant_gemini.duckdb
+2026-02-25 10:08:19,079 - QuantAI_Gemini - INFO - 数据加载完成，共计 144306 条记录。
+2026-02-25 10:08:19,139 - QuantAI_Gemini - INFO - 开始计算基础技术因子...
+2026-02-25 10:08:19,262 - QuantAI_Gemini - INFO - 开始进行因子横截面预处理 (确保日期对象保留)...
+2026-02-25 10:08:23,977 - QuantAI_Gemini - INFO - 最终因子矩阵列名: ['date', 'symbol', 'mom_5', 'mom_20', 'vol_20', 'bias_20', 'vol_ratio']
+2026-02-25 10:08:23,978 - QuantAI_Gemini - INFO - 因子矩阵生成完成: (141765, 7)
+2026-02-25 10:08:24,098 - QuantAI_Gemini - INFO - 数据加载完成，共计 144306 条记录。
+2026-02-25 10:08:24,160 - QuantAI_Gemini - INFO - 基于线性加权生成多因子综合评分...
+2026-02-25 10:08:24,173 - QuantAI_Gemini - INFO - 信号样例:
+        date     symbol  signal_score
+0 2020-02-07  sh.600000      0.138752
+1 2020-02-07  sh.600009      0.096652
+2 2020-02-07  sh.600010      0.073092
+3 2020-02-07  sh.600011     -0.092427
+4 2020-02-07  sh.600015      0.599409
+2026-02-25 10:08:24,174 - QuantAI_Gemini - INFO - 计算目标持仓，每期选股数量: 10
+2026-02-25 10:08:24,209 - QuantAI_Gemini - INFO - 持仓样例:
+         date     symbol  target_weight
+4  2020-02-07  sh.600015            0.1
+5  2020-02-07  sh.600016            0.1
+16 2020-02-07  sh.600036            0.1
+22 2020-02-07  sh.600085            0.1
+29 2020-02-07  sh.600161            0.1
+2026-02-25 10:08:24,209 - QuantAI_Gemini - INFO - 总持仓记录数: 14660
+2026-02-25 10:08:24,209 - QuantAI_Gemini - INFO - 开始向量化回测流程...
+2026-02-25 10:08:24,257 - QuantAI_Gemini - INFO - 回测绩效统计: {'Cumulative Return': '36810.20%', 'Annual Return': '161.86%', 'Max Drawdown': '-11.99%', 'Volatility': '21.61%', 'Sharpe Ratio': '7.37', 'Calmar Ratio': '13.50'}
+2026-02-25 10:08:24,259 - QuantAI_Gemini - INFO - 生成周期性报告 (频率: QE)...
+2026-02-25 10:08:24,269 - QuantAI_Gemini - INFO - ==================================================
+2026-02-25 10:08:24,269 - QuantAI_Gemini - INFO - 策略绩效汇总报告 (2020-01-01 至今):
+2026-02-25 10:08:24,269 - QuantAI_Gemini - INFO - Cumulative Return: 36810.20%
+2026-02-25 10:08:24,269 - QuantAI_Gemini - INFO - Annual Return: 161.86%
+2026-02-25 10:08:24,269 - QuantAI_Gemini - INFO - Max Drawdown: -11.99%
+2026-02-25 10:08:24,269 - QuantAI_Gemini - INFO - Volatility: 21.61%
+2026-02-25 10:08:24,269 - QuantAI_Gemini - INFO - Sharpe Ratio: 7.37
+2026-02-25 10:08:24,269 - QuantAI_Gemini - INFO - Calmar Ratio: 13.50
+2026-02-25 10:08:24,269 - QuantAI_Gemini - INFO - ==================================================
+2026-02-25 10:08:24,277 - QuantAI_Gemini - INFO - 净值曲线已保存至: /home/Admin/quantAI_gemini/reports/portfolio_nav.csv
+2026-02-25 10:08:24,292 - QuantAI_Gemini - INFO - 数据库连接已关闭
+2026-02-25 10:18:05,840 - QuantAI_Gemini - INFO - ==================================================
+2026-02-25 10:18:05,840 - QuantAI_Gemini - INFO - QuantAI Gemini 全流程量化工作流启动
+2026-02-25 10:18:05,840 - QuantAI_Gemini - INFO - ==================================================
+2026-02-25 10:18:05,851 - QuantAI_Gemini - INFO - DuckDB 数据库已连接: /home/Admin/quantAI_gemini/database/quant_gemini.duckdb
+2026-02-25 10:18:06,351 - QuantAI_Gemini - INFO - BaoStock 登录成功。
+2026-02-25 10:18:06,789 - QuantAI_Gemini - INFO - 检测到最近交易日: 2026-02-25
+2026-02-25 10:18:06,789 - QuantAI_Gemini - INFO - 正在获取 A 股列表 (基准日期: 2026-02-25)...
+2026-02-25 10:18:07,516 - QuantAI_Gemini - INFO - 成功获取 300 只 A 股证券代码。
+2026-02-25 10:18:07,516 - QuantAI_Gemini - INFO - 测试股票池数量: 100
+2026-02-25 10:18:07,742 - QuantAI_Gemini - INFO - 数据库连接已关闭
+2026-02-25 10:18:07,743 - QuantAI_Gemini - INFO - BaoStock 已登出，数据库已关闭。
+2026-02-25 10:18:07,754 - QuantAI_Gemini - INFO - DuckDB 数据库已连接: /home/Admin/quantAI_gemini/database/quant_gemini.duckdb
+2026-02-25 10:18:07,899 - QuantAI_Gemini - INFO - 数据加载完成，共计 144306 条记录。
+2026-02-25 10:18:07,954 - QuantAI_Gemini - INFO - 开始计算基础技术因子...
+2026-02-25 10:18:08,061 - QuantAI_Gemini - INFO - 开始进行因子横截面预处理 (确保日期对象保留)...
+2026-02-25 10:18:12,861 - QuantAI_Gemini - INFO - 最终因子矩阵列名: ['date', 'symbol', 'mom_5', 'mom_20', 'vol_20', 'bias_20', 'vol_ratio']
+2026-02-25 10:18:12,861 - QuantAI_Gemini - INFO - 因子矩阵生成完成: (141765, 7)
+2026-02-25 10:18:13,068 - QuantAI_Gemini - INFO - 数据加载完成，共计 144306 条记录。
+2026-02-25 10:18:13,459 - QuantAI_Gemini - INFO - 基于线性加权生成多因子综合评分...
+2026-02-25 10:18:13,758 - QuantAI_Gemini - INFO - 信号样例:
+        date     symbol  signal_score
+0 2020-02-07  sh.600000      0.138752
+1 2020-02-07  sh.600009      0.096652
+2 2020-02-07  sh.600010      0.073092
+3 2020-02-07  sh.600011     -0.092427
+4 2020-02-07  sh.600015      0.599409
+2026-02-25 10:18:13,758 - QuantAI_Gemini - INFO - 计算目标持仓，每期选股数量: 10
+2026-02-25 10:18:13,802 - QuantAI_Gemini - INFO - 持仓样例:
+         date     symbol  target_weight
+4  2020-02-07  sh.600015            0.1
+5  2020-02-07  sh.600016            0.1
+16 2020-02-07  sh.600036            0.1
+22 2020-02-07  sh.600085            0.1
+29 2020-02-07  sh.600161            0.1
+2026-02-25 10:18:13,802 - QuantAI_Gemini - INFO - 总持仓记录数: 14660
+2026-02-25 10:18:13,802 - QuantAI_Gemini - INFO - 开始向量化回测流程...
+2026-02-25 10:18:13,861 - QuantAI_Gemini - INFO - 回测绩效统计: {'Cumulative Return': '34389.94%', 'Annual Return': '158.98%', 'Max Drawdown': '-11.49%', 'Volatility': '21.49%', 'Sharpe Ratio': '7.28', 'Calmar Ratio': '13.83'}
+2026-02-25 10:18:13,863 - QuantAI_Gemini - INFO - 生成周期性报告 (频率: QE)...
+2026-02-25 10:18:13,979 - QuantAI_Gemini - INFO - ==================================================
+2026-02-25 10:18:13,979 - QuantAI_Gemini - INFO - 策略绩效汇总报告 (2020-01-01 至今):
+2026-02-25 10:18:13,979 - QuantAI_Gemini - INFO - Cumulative Return: 34389.94%
+2026-02-25 10:18:13,979 - QuantAI_Gemini - INFO - Annual Return: 158.98%
+2026-02-25 10:18:13,979 - QuantAI_Gemini - INFO - Max Drawdown: -11.49%
+2026-02-25 10:18:13,979 - QuantAI_Gemini - INFO - Volatility: 21.49%
+2026-02-25 10:18:13,979 - QuantAI_Gemini - INFO - Sharpe Ratio: 7.28
+2026-02-25 10:18:13,979 - QuantAI_Gemini - INFO - Calmar Ratio: 13.83
+2026-02-25 10:18:13,979 - QuantAI_Gemini - INFO - ==================================================
+2026-02-25 10:18:14,128 - QuantAI_Gemini - INFO - 净值曲线已保存至: /home/Admin/quantAI_gemini/reports/portfolio_nav.csv
+2026-02-25 10:18:14,910 - QuantAI_Gemini - INFO - 数据库连接已关闭
+2026-02-25 10:22:43,267 - QuantAI_Gemini - INFO - ==================================================
+2026-02-25 10:22:43,268 - QuantAI_Gemini - INFO - QuantAI Gemini Alpha 评价工作流启动
+2026-02-25 10:22:43,268 - QuantAI_Gemini - INFO - ==================================================
+2026-02-25 10:22:43,280 - QuantAI_Gemini - INFO - DuckDB 数据库已连接: /home/Admin/quantAI_gemini/database/quant_gemini.duckdb
+2026-02-25 10:22:43,707 - QuantAI_Gemini - INFO - BaoStock 登录成功。
+2026-02-25 10:22:44,206 - QuantAI_Gemini - INFO - 获取历史股票池 (基准日期: 2015-01-01)...
+2026-02-25 10:22:44,659 - QuantAI_Gemini - INFO - 历史股票池获取成功，样本数: 300
+2026-02-25 10:22:44,659 - QuantAI_Gemini - INFO - 正在下载基准数据: sh.000300
+2026-02-25 10:22:49,396 - QuantAI_Gemini - INFO - 数据已保存至表: benchmark_daily, 记录数: 3917
+2026-02-25 10:22:49,396 - QuantAI_Gemini - INFO - 正在下载基准数据: sh.000300
+2026-02-25 10:22:55,762 - QuantAI_Gemini - INFO - 数据已保存至表: benchmark_daily, 记录数: 3917
+2026-02-25 10:30:08,037 - QuantAI_Gemini - INFO - ==================================================
+2026-02-25 10:30:08,038 - QuantAI_Gemini - INFO - QuantAI Gemini Alpha 评价工作流启动
+2026-02-25 10:30:08,038 - QuantAI_Gemini - INFO - ==================================================
+2026-02-25 10:30:08,138 - QuantAI_Gemini - INFO - DuckDB 数据库已连接: /home/Admin/quantAI_gemini/database/quant_gemini.duckdb
+2026-02-25 10:30:08,741 - QuantAI_Gemini - INFO - BaoStock 登录成功。
+2026-02-25 10:30:09,180 - QuantAI_Gemini - INFO - 获取历史股票池 (基准日期: 2015-01-01)...
+2026-02-25 10:30:10,192 - QuantAI_Gemini - INFO - 历史股票池获取成功，样本数: 300
+2026-02-25 10:30:10,192 - QuantAI_Gemini - INFO - 正在下载基准数据: sh.000300
+2026-02-25 10:30:14,209 - QuantAI_Gemini - INFO - 数据已保存至表: benchmark_daily, 记录数: 3917
+2026-02-25 10:32:14,120 - QuantAI_Gemini - INFO - 数据已保存至表: stock_daily, 记录数: 77382
+2026-02-25 10:32:14,122 - QuantAI_Gemini - INFO - 进度: 20/20
+2026-02-25 10:32:14,423 - QuantAI_Gemini - INFO - 数据库连接已关闭
+2026-02-25 10:32:14,438 - QuantAI_Gemini - INFO - DuckDB 数据库已连接: /home/Admin/quantAI_gemini/database/quant_gemini.duckdb
+2026-02-25 10:32:14,460 - QuantAI_Gemini - INFO - 数据加载完成，共计 29720 条记录。
+2026-02-25 10:32:14,586 - QuantAI_Gemini - INFO - 开始计算基础技术因子...
+2026-02-25 10:32:14,619 - QuantAI_Gemini - INFO - 开始进行因子横截面预处理 (确保日期对象保留)...
+2026-02-25 10:32:19,244 - QuantAI_Gemini - INFO - 最终因子矩阵列名: ['date', 'symbol', 'mom_5', 'mom_20', 'vol_20', 'bias_20', 'vol_ratio']
+2026-02-25 10:32:19,384 - QuantAI_Gemini - INFO - 数据加载完成，共计 29720 条记录。
+2026-02-25 10:32:19,770 - QuantAI_Gemini - INFO - 基于线性加权生成多因子综合评分...
+2026-02-25 10:32:19,775 - QuantAI_Gemini - INFO - 计算目标持仓，每期选股数量: 10
+2026-02-25 10:32:20,249 - QuantAI_Gemini - INFO - DuckDB 数据库已连接: /home/Admin/quantAI_gemini/database/quant_gemini.duckdb
+2026-02-25 10:32:21,538 - QuantAI_Gemini - INFO - 数据库连接已关闭
+2026-02-25 10:32:21,598 - QuantAI_Gemini - INFO - 开始向量化回测 (包含 Alpha 评价)...
+2026-02-25 10:32:25,109 - QuantAI_Gemini - INFO - 回测绩效统计: {'Cumulative Return': '395.79%', 'Annual Return': '29.79%', 'Max Drawdown': '-15.28%', 'Sharpe Ratio': '1.58', 'Benchmark Return': '14.91%', 'Annual Alpha': '27.50%', 'Beta': '0.61', 'Information Ratio': '1.84'}
+2026-02-25 10:32:25,199 - QuantAI_Gemini - INFO - 生成周期性报告 (频率: QE)...
+2026-02-25 10:32:25,274 - QuantAI_Gemini - INFO - ==================================================
+2026-02-25 10:32:25,274 - QuantAI_Gemini - INFO - 策略 Alpha 绩效汇总:
+2026-02-25 10:32:25,274 - QuantAI_Gemini - INFO - Cumulative Return: 395.79%
+2026-02-25 10:32:25,274 - QuantAI_Gemini - INFO - Annual Return: 29.79%
+2026-02-25 10:32:25,274 - QuantAI_Gemini - INFO - Max Drawdown: -15.28%
+2026-02-25 10:32:25,274 - QuantAI_Gemini - INFO - Sharpe Ratio: 1.58
+2026-02-25 10:32:25,274 - QuantAI_Gemini - INFO - Benchmark Return: 14.91%
+2026-02-25 10:32:25,274 - QuantAI_Gemini - INFO - Annual Alpha: 27.50%
+2026-02-25 10:32:25,274 - QuantAI_Gemini - INFO - Beta: 0.61
+2026-02-25 10:32:25,274 - QuantAI_Gemini - INFO - Information Ratio: 1.84
+2026-02-25 10:32:25,274 - QuantAI_Gemini - INFO - ==================================================

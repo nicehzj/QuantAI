@@ -1,0 +1,45 @@
+# QuantAI Gemini 全局配置文件
+
+# 项目基础信息
+project:
+  name: QuantAI_Gemini
+  version: 1.0.0
+  base_dir: /home/Admin/quantAI_gemini
+
+# 数据源与存储配置
+data:
+  source: baostock  # 切换为 Baostock 以提高稳定性
+  storage_type: parquet  # 存储格式: parquet (推荐用于大数据量)
+  frequency: daily       # 数据频率: daily, minute
+  paths:
+    raw: data/raw
+    processed: data/processed
+    cache: data/cache
+  symbols: all           # "all" 表示全市场股票监控
+  start_date: "2010-01-01"
+  end_date: null         # null 表示当前日期
+
+# 数据库配置 (采用 DuckDB 优化 OLAP 查询)
+database:
+  db_type: duckdb
+  db_path: database/quant_gemini.duckdb
+
+# 因子计算配置
+factors:
+  standardize: true  # 是否进行标准化处理
+  winsorize: true    # 是否进行去极值处理
+  neutralize: true   # 是否进行行业中性化
+
+# 回测引擎默认参数
+backtest:
+  initial_cash: 20000    # 初始资金: 2万
+  commission: 0.00015    # 交易佣金: 万1.5
+  tax: 0.001             # 印花税: 千分之一（仅卖出）
+  slippage: 0.0001       # 滑点: 万分之一
+  benchmark: 000300.SH   # 基准指数
+
+# 日志配置
+logging:
+  level: INFO
+  save_to_file: true
+  log_path: logs/workflow.log
