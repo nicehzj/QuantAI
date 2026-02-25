@@ -554,3 +554,54 @@ ValueError: You are trying to merge on datetime64[us] and int64 columns for key 
 2026-02-25 10:32:25,274 - QuantAI_Gemini - INFO - Beta: 0.61
 2026-02-25 10:32:25,274 - QuantAI_Gemini - INFO - Information Ratio: 1.84
 2026-02-25 10:32:25,274 - QuantAI_Gemini - INFO - ==================================================
+2026-02-26 00:28:49,786 - QuantAI_Gemini - INFO - ============================================================
+2026-02-26 00:28:49,786 - QuantAI_Gemini - INFO - QuantAI Gemini 专业级寻优工作流 (全市场模式)
+2026-02-26 00:28:49,787 - QuantAI_Gemini - INFO - ============================================================
+2026-02-26 00:28:49,809 - QuantAI_Gemini - INFO - DuckDB 数据库已连接: D:\MyCode\QuantAI\database\quant_gemini.duckdb
+2026-02-26 00:28:51,353 - QuantAI_Gemini - INFO - BaoStock 登录成功。
+2026-02-26 00:28:52,183 - QuantAI_Gemini - INFO - 正在构建 A 股全市场种子列表 (含北交所)...
+2026-02-26 00:28:52,614 - QuantAI_Gemini - INFO - 全市场种子列表构建完成，总计尝试扫描: 42000 个代码。
+2026-02-26 00:28:52,615 - QuantAI_Gemini - INFO - 🚀 测试模式启动，目标股票数: 50
+2026-02-26 00:28:52,630 - QuantAI_Gemini - INFO - 检测到本地已存有 20 只股票，准备续传...
+2026-02-26 00:29:20,531 - QuantAI_Gemini - INFO - 任务结束。本次同步新增: 0 只有效股票。
+2026-02-26 00:29:21,354 - QuantAI_Gemini - INFO - 数据库连接已关闭
+2026-02-26 00:29:21,363 - QuantAI_Gemini - INFO - DuckDB 数据库已连接: D:\MyCode\QuantAI\database\quant_gemini.duckdb
+2026-02-26 00:29:21,382 - QuantAI_Gemini - INFO - 数据加载完成，共计 29720 条记录。
+2026-02-26 00:29:21,409 - QuantAI_Gemini - INFO - 开始计算基础技术因子...
+2026-02-26 00:29:21,434 - QuantAI_Gemini - INFO - 开始进行因子横截面预处理 (确保日期对象保留)...
+2026-02-26 00:29:24,685 - QuantAI_Gemini - INFO - 最终因子矩阵列名: ['date', 'symbol', 'mom_5', 'mom_20', 'vol_20', 'bias_20', 'vol_ratio']
+2026-02-26 00:29:24,694 - QuantAI_Gemini - INFO - 数据加载完成，共计 29720 条记录。
+2026-02-26 00:29:24,709 - QuantAI_Gemini - INFO - DuckDB 数据库已连接: D:\MyCode\QuantAI\database\quant_gemini.duckdb
+2026-02-26 00:29:24,711 - QuantAI_Gemini - INFO - 数据库连接已关闭
+2026-02-26 00:29:24,711 - QuantAI_Gemini - INFO - 启动高级网格搜索寻优...
+2026-02-26 00:29:24,711 - QuantAI_Gemini - INFO - 基于线性加权生成多因子综合评分...
+2026-02-26 00:29:24,714 - QuantAI_Gemini - INFO - 计算目标持仓，每期选股数量: 10
+2026-02-26 00:29:24,730 - QuantAI_Gemini - INFO - 开始向量化回测 (包含交易明细统计)...
+2026-02-26 00:29:24,817 - QuantAI_Gemini - INFO - 回测绩效统计: {'Cumulative Return': '43.83%', 'Annual Return': '6.10%', 'Max Drawdown': '-23.81%', 'Sharpe Ratio': '0.21', 'Total Trades': 1600, 'Win Rate': '44.56%', 'Win/Loss Ratio': '1.42', 'Benchmark Return': '14.91%', 'Annual Alpha': '3.81%'}
+2026-02-26 00:29:24,818 - QuantAI_Gemini - INFO - 基于线性加权生成多因子综合评分...
+2026-02-26 00:29:24,821 - QuantAI_Gemini - INFO - 计算目标持仓，每期选股数量: 10
+2026-02-26 00:29:24,826 - QuantAI_Gemini - INFO - 开始向量化回测 (包含交易明细统计)...
+2026-02-26 00:29:24,906 - QuantAI_Gemini - INFO - 回测绩效统计: {'Cumulative Return': '43.64%', 'Annual Return': '6.08%', 'Max Drawdown': '-25.10%', 'Sharpe Ratio': '0.20', 'Total Trades': 1638, 'Win Rate': '43.65%', 'Win/Loss Ratio': '1.46', 'Benchmark Return': '14.91%', 'Annual Alpha': '3.79%'}
+2026-02-26 00:29:24,908 - QuantAI_Gemini - INFO - 寻优完成。最佳因子: mom_20
+2026-02-26 00:29:24,908 - QuantAI_Gemini - INFO - 基于线性加权生成多因子综合评分...
+2026-02-26 00:29:24,910 - QuantAI_Gemini - INFO - 计算目标持仓，每期选股数量: 10
+2026-02-26 00:29:24,915 - QuantAI_Gemini - INFO - 开始向量化回测 (包含交易明细统计)...
+2026-02-26 00:29:24,997 - QuantAI_Gemini - INFO - 回测绩效统计: {'Cumulative Return': '43.83%', 'Annual Return': '6.10%', 'Max Drawdown': '-23.81%', 'Sharpe Ratio': '0.21', 'Total Trades': 1600, 'Win Rate': '44.56%', 'Win/Loss Ratio': '1.42', 'Benchmark Return': '14.91%', 'Annual Alpha': '3.81%'}
+2026-02-26 00:29:24,998 - QuantAI_Gemini - INFO - 
+************************************************************
+2026-02-26 00:29:24,998 - QuantAI_Gemini - INFO - 🏆 全流程自动寻优战果报告 🏆
+2026-02-26 00:29:24,998 - QuantAI_Gemini - INFO - ************************************************************
+2026-02-26 00:29:24,998 - QuantAI_Gemini - INFO - 📍 最佳核心因子: mom_20
+2026-02-26 00:29:24,998 - QuantAI_Gemini - INFO - 📍 最优权重配置: {'mom_20': 0.3, 'vol_20': -0.2, 'bias_20': -0.1, 'vol_ratio': 0.2}
+2026-02-26 00:29:24,998 - QuantAI_Gemini - INFO - ----------------------------------------
+2026-02-26 00:29:24,999 - QuantAI_Gemini - INFO - 📊 核心绩效指标:
+2026-02-26 00:29:24,999 - QuantAI_Gemini - INFO -    - 夏普比率: 0.21
+2026-02-26 00:29:24,999 - QuantAI_Gemini - INFO -    - 年化 Alpha: 3.81%
+2026-02-26 00:29:24,999 - QuantAI_Gemini - INFO - ----------------------------------------
+2026-02-26 00:29:24,999 - QuantAI_Gemini - INFO - 📈 实战稳健性指标:
+2026-02-26 00:29:24,999 - QuantAI_Gemini - INFO -    - 策略胜率: 44.56%
+2026-02-26 00:29:24,999 - QuantAI_Gemini - INFO -    - 盈亏比: 1.42
+2026-02-26 00:29:24,999 - QuantAI_Gemini - INFO -    - 总交易笔数: 1600 笔
+2026-02-26 00:29:24,999 - QuantAI_Gemini - INFO - ************************************************************
+
+2026-02-26 00:29:25,002 - QuantAI_Gemini - INFO - 数据库连接已关闭

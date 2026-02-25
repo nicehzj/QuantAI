@@ -19,15 +19,22 @@ class BacktestEngine:
         price_df = price_df.copy().sort_values(['symbol', 'date'])
         price_df['pct_chg_calc'] = price_df.groupby('symbol')['close'].pct_change()
         
-        # 2. 信号平移 (T+2 执行延迟)
-        positions = positions.copy().sort_values(['symbol', 'date'])
-        positions['actual_weight'] = positions.groupby('symbol')['target_weight'].shift(2)
+        # 健壮性增强：处理可能的除权错误导致的异常收益率
+        # 如果单日涨幅超过 20%，则将其限制为 10% (通常涨停板)
+        price_df.loc[price_df['pct_chg_calc'] > 0.20, 'pct_chg_calc'] = 0.10
+        price_df.loc[price_df['pct_chg_calc'] < -0.20, 'pct_chg_calc'] = -0.10
         
-        # 3. 对齐数据
+        # 2. 对齐数据：先 merge，再在真实时间轴上 shift
         price_df['date'] = pd.to_datetime(price_df['date'])
         positions['date'] = pd.to_datetime(positions['date'])
-        backtest_df = pd.merge(price_df, positions, on=['date', 'symbol'], how='left')
-        backtest_df['actual_weight'] = backtest_df['actual_weight'].fillna(0)
+        
+        # 创建一个对齐框架，确保所有股票的所有日期都在
+        backtest_df = pd.merge(price_df, positions[['date', 'symbol', 'target_weight']], on=['date', 'symbol'], how='left')
+        backtest_df['target_weight'] = backtest_df['target_weight'].fillna(0)
+        
+        # 核心修复：在对齐后的全量时间序列上进行 shift(2)
+        # 这样确保 T 日产生的信号在 T+2 日生效，且不会因为数据稀疏导致错位
+        backtest_df['actual_weight'] = backtest_df.groupby('symbol')['target_weight'].shift(2).fillna(0)
         
         # 4. 计算组合日收益率
         backtest_df['stock_ret'] = backtest_df['pct_chg_calc'] * backtest_df['actual_weight']

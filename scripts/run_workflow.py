@@ -26,9 +26,11 @@ def run_pro_pipeline():
     loader = DataLoader(cfg)
     # 获取 2015 年时的全市场股票快照，包含退市股
     full_symbols = loader.fetch_historical_universe(date="2015-01-01", universe="all")
-    logger.info(f"🚀 全市场扫描启动，目标股票数: {len(full_symbols)}")
+    # 限制为 50 只进行测试
+    test_symbols = full_symbols[:50]
+    logger.info(f"🚀 测试模式启动，目标股票数: {len(test_symbols)}")
     # 执行同步 (若本地已有则自动跳过)
-    loader.update_database(full_symbols)
+    loader.update_database(test_symbols)
     loader.close()
 
     # 1. 因子与行情准备
