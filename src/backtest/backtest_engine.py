@@ -15,23 +15,72 @@ class BacktestEngine:
         """
         self.logger.info("开始向量化回测 (包含交易明细统计)...")
         
-        # 1. 计算股票日收益率
+        # 1. 预处理数据
         price_df = price_df.copy().sort_values(['symbol', 'date'])
-        price_df['pct_chg_calc'] = price_df.groupby('symbol')['close'].pct_change()
-        
-        # 2. 信号平移 (T+2 执行延迟)
-        positions = positions.copy().sort_values(['symbol', 'date'])
-        positions['actual_weight'] = positions.groupby('symbol')['target_weight'].shift(2)
-        
-        # 3. 对齐数据
         price_df['date'] = pd.to_datetime(price_df['date'])
         positions['date'] = pd.to_datetime(positions['date'])
-        backtest_df = pd.merge(price_df, positions, on=['date', 'symbol'], how='left')
-        backtest_df['actual_weight'] = backtest_df['actual_weight'].fillna(0)
         
-        # 4. 计算组合日收益率
-        backtest_df['stock_ret'] = backtest_df['pct_chg_calc'] * backtest_df['actual_weight']
-        portfolio_daily_ret = backtest_df.groupby('date')['stock_ret'].sum()
+        # 2. 核心改进：修正信号时空错位 (先对齐全量行情，再在连续时间轴上平移)
+        backtest_df = pd.merge(price_df, positions[['date', 'symbol', 'target_weight']], on=['date', 'symbol'], how='left')
+        backtest_df['target_weight'] = backtest_df.groupby('symbol')['target_weight'].ffill().fillna(0)
+        
+        # 3. 计算并清洗股票日收益率 (遵循 A 股涨跌停规则)
+        backtest_df['pct_chg_calc'] = backtest_df.groupby('symbol')['close'].pct_change()
+        
+        # 定义 A 股差异化涨跌停限制
+        def get_limit(symbol):
+            if symbol.startswith(('sh.68', 'sz.30')): return 0.20 # 科创/创业板
+            if symbol.startswith('bj'): return 0.30              # 北交所
+            return 0.10                                          # 主板
+            
+        # 应用涨跌停截断 (防止脏数据或除权错误)
+        # 我们允许 0.5% 的溢出以容忍数据计算误差
+        backtest_df['limit'] = backtest_df['symbol'].apply(get_limit)
+        backtest_df.loc[backtest_df['pct_chg_calc'] > backtest_df['limit'] + 0.005, 'pct_chg_calc'] = backtest_df['limit']
+        backtest_df.loc[backtest_df['pct_chg_calc'] < -backtest_df['limit'] - 0.005, 'pct_chg_calc'] = -backtest_df['limit']
+        
+        # 4. 核心改进：交易执行约束（防止“收盘价买入即获利”的未来函数）
+        # 逻辑链条：
+        # T日：计算因子，产生信号 S_T
+        # T+1日：执行日。在收盘判定是否涨跌停。
+        #        若可成交，则收盘后持有 S_T。该过程不产生收益。
+        # T+2日：持有 S_T 的第一个完整交易日，产生收益 (Close_T+2 / Close_T+1) - 1
+        
+        # 获取 T 日信号 (相对于当前行的 D 日，信号是 D-1 日产生的)
+        backtest_df['signal_T'] = backtest_df.groupby('symbol')['target_weight'].shift(1).fillna(0)
+        # 获取 T-1 日的持仓状态 (即在 T+1 执行前的初始状态)
+        backtest_df['holding_before'] = backtest_df.groupby('symbol')['actual_holding'].shift(1).fillna(0)
+        
+        # 判定 T+1 日（当前行）是否可以执行调仓
+        def determine_execution(row):
+            # 增持/买入：若涨停则失败，维持原仓位
+            if row['signal_T'] > row['holding_before'] and row['is_limit_up']:
+                return row['holding_before']
+            # 减持/卖出：若跌停则失败，维持原仓位
+            if row['signal_T'] < row['holding_before'] and row['is_limit_down']:
+                return row['holding_before']
+            # 正常调仓
+            return row['signal_T']
+            
+        # 计算在 T+1 日收盘后的确切持仓
+        backtest_df['actual_holding'] = backtest_df.apply(determine_execution, axis=1)
+        
+        # 5. 计算组合日收益率 (必须使用前一日收盘后的持仓 * 今日收益率)
+        # actual_holding 在 D-1 日结束时确定，决定了 D 日的收益
+        backtest_df['holding_for_ret'] = backtest_df.groupby('symbol')['actual_holding'].shift(1).fillna(0)
+        backtest_df['stock_ret'] = backtest_df['pct_chg_calc'] * backtest_df['holding_for_ret']
+        
+        # 6. 计算摩擦成本 (仅在 actual_holding 发生变化时扣除)
+        backtest_df['weight_diff'] = backtest_df.groupby('symbol')['actual_holding'].diff().abs().fillna(0)
+        daily_turnover = backtest_df.groupby('date')['weight_diff'].sum()
+        
+        comm = self.config['backtest'].get('commission', 0.00015)
+        tax = self.config['backtest'].get('tax', 0.001)
+        slippage = self.config['backtest'].get('slippage', 0.0001)
+        cost_rate = comm + slippage + (tax * 0.5)
+        daily_cost = daily_turnover * cost_rate
+        
+        portfolio_daily_ret = backtest_df.groupby('date')['stock_ret'].sum() - daily_cost
         portfolio_nav = (1 + portfolio_daily_ret).cumprod()
 
         # --- 核心改进：计算逐笔交易胜率与盈亏比 ---

@@ -4,7 +4,7 @@
 project:
   name: QuantAI_Gemini
   version: 1.0.0
-  base_dir: /home/Admin/quantAI_gemini
+  base_dir: .
 
 # 数据源与存储配置
 data:

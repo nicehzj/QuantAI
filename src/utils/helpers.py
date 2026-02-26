@@ -29,7 +29,14 @@ def setup_logging(config):
     level_str = log_cfg.get('level', 'INFO')
     level = getattr(logging, level_str.upper())
     
-    base_dir = Path(config['project']['base_dir'])
+    # 修正：将相对路径 "." 映射为真实的物理根目录
+    project_root = Path(__file__).resolve().parent.parent.parent
+    base_dir_val = config['project']['base_dir']
+    if base_dir_val == ".":
+        base_dir = project_root
+    else:
+        base_dir = Path(base_dir_val)
+        
     log_file = base_dir / log_cfg.get('log_path', 'logs/workflow.log')
     
     log_file.parent.mkdir(parents=True, exist_ok=True)

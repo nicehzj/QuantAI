@@ -9,7 +9,15 @@ class QuantDatabase:
         初始化 DuckDB 数据库连接
         """
         self.config = config
-        base_dir = Path(config['project']['base_dir'])
+        
+        # 修正路径解析逻辑
+        project_root = Path(__file__).resolve().parent.parent.parent
+        base_dir_val = config['project']['base_dir']
+        if base_dir_val == ".":
+            base_dir = project_root
+        else:
+            base_dir = Path(base_dir_val)
+            
         db_path = base_dir / config['database'].get('db_path', 'database/quant_gemini.duckdb')
         
         # 确保数据库所在目录存在

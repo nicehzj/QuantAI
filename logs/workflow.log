@@ -554,3 +554,8 @@ ValueError: You are trying to merge on datetime64[us] and int64 columns for key 
 2026-02-25 10:32:25,274 - QuantAI_Gemini - INFO - Beta: 0.61
 2026-02-25 10:32:25,274 - QuantAI_Gemini - INFO - Information Ratio: 1.84
 2026-02-25 10:32:25,274 - QuantAI_Gemini - INFO - ==================================================
+2026-02-26 08:50:24,005 - QuantAI_Gemini - INFO - ============================================================
+2026-02-26 08:50:24,005 - QuantAI_Gemini - INFO - QuantAI Gemini 快速寻优管线 (已跳过数据同步)
+2026-02-26 08:50:24,005 - QuantAI_Gemini - INFO - ============================================================
+2026-02-26 08:50:24,021 - QuantAI_Gemini - INFO - DuckDB 数据库已连接: /home/Admin/QuantAI/database/quant_gemini.duckdb
+2026-02-26 08:50:24,021 - QuantAI_Gemini - INFO - 正在提取全市场因子矩阵与行情数据 (2020年至今)...
