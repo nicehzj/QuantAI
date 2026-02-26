@@ -7,6 +7,9 @@ data/raw/
 data/processed/
 data/cache/
 database/*.duckdb
+database/*.tar.gz
+!database/shards/
+!database/shards/*
 reports/*.csv
 .env
 .DS_Store
