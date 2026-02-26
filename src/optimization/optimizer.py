@@ -39,18 +39,27 @@ class StrategyOptimizer:
             
             if not perf: continue
             
-            # 以夏普比率作为核心寻优指标，若夏普相同则看 Alpha
+            # 以夏普比率作为核心寻优指标，结合年化 Alpha 综合评分
             sharpe = float(perf['Sharpe Ratio'])
-            alpha = float(perf.get('Annual Alpha', '0%').replace('%', ''))
             
-            score = sharpe * 100 + alpha
+            # 安全解析 Alpha 字符串 (处理 25.5% -> 0.255)
+            alpha_str = perf.get('Annual Alpha', '0%').replace('%', '')
+            try:
+                alpha_val = float(alpha_str) / 100.0
+            except:
+                alpha_val = 0.0
+            
+            # 综合得分：夏普比率权重 70% + 超额收益权重 30%
+            # 这是量化常用的评分模型，兼顾风险和收益
+            score = (sharpe * 0.7) + (alpha_val * 10.0 * 0.3)
             
             result_entry = {
                 'weights': current_weights,
                 'sharpe': sharpe,
-                'alpha': alpha,
+                'alpha': alpha_val,
                 'total_trades': perf['Total Trades'],
-                'annual_ret': perf['Annual Return']
+                'annual_ret': perf['Annual Return'],
+                'score': score
             }
             summary_results.append(result_entry)
             

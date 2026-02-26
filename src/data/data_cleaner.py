@@ -30,7 +30,7 @@ class DataCleaner:
 
     def standardize_series(self, series):
         std = series.std()
-        if std == 0 or pd.isna(std):
+        if std < 1e-8 or pd.isna(std):
             return series - series.mean()
         return (series - series.mean()) / std
 
@@ -49,11 +49,16 @@ class DataCleaner:
         
         results = []
         for date, group in tqdm(grouped, desc="正在处理横截面因子"):
+            if len(group) < 2: # 样本太少无法标准化
+                results.append(group)
+                continue
+                
             processed_group = group.copy()
             for col in group.columns:
                 if col not in ['date', 'symbol']:
-                    # 对每一列进行去极值和标准化
-                    processed_group[col] = self.standardize_series(self.winsorize_series(group[col]))
+                    # 仅在非全量 NaN 的情况下处理
+                    if not group[col].isnull().all():
+                        processed_group[col] = self.standardize_series(self.winsorize_series(group[col]))
             results.append(processed_group)
             
         return pd.concat(results, ignore_index=True)

@@ -46,51 +46,74 @@ class BacktestEngine:
         #        若可成交，则收盘后持有 S_T。该过程不产生收益。
         # T+2日：持有 S_T 的第一个完整交易日，产生收益 (Close_T+2 / Close_T+1) - 1
         
-        # 获取 T 日信号 (相对于当前行的 D 日，信号是 D-1 日产生的)
-        backtest_df['signal_T'] = backtest_df.groupby('symbol')['target_weight'].shift(1).fillna(0)
-        # 获取 T-1 日的持仓状态 (即在 T+1 执行前的初始状态)
-        backtest_df['holding_before'] = backtest_df.groupby('symbol')['actual_holding'].shift(1).fillna(0)
+        # 识别涨跌停状态 (基于计算出的涨跌幅 pct_chg_calc)
+        backtest_df['is_limit_up'] = backtest_df['pct_chg_calc'] >= backtest_df['limit'] - 0.0001
+        backtest_df['is_limit_down'] = backtest_df['pct_chg_calc'] <= -backtest_df['limit'] + 0.0001
         
-        # 判定 T+1 日（当前行）是否可以执行调仓
-        def determine_execution(row):
-            # 增持/买入：若涨停则失败，维持原仓位
-            if row['signal_T'] > row['holding_before'] and row['is_limit_up']:
-                return row['holding_before']
-            # 减持/卖出：若跌停则失败，维持原仓位
-            if row['signal_T'] < row['holding_before'] and row['is_limit_down']:
-                return row['holding_before']
-            # 正常调仓
-            return row['signal_T']
+        # 迭代计算实际持仓 (处理 A 股涨跌停导致的调仓受阻路径依赖)
+        def compute_actual_holdings(group):
+            holdings = np.zeros(len(group))
+            # 信号是 T 日产生的，在 T+1 日（当前行）尝试执行
+            signals = group['target_weight'].shift(1).fillna(0).values
+            limit_ups = group['is_limit_up'].values
+            limit_downs = group['is_limit_down'].values
             
-        # 计算在 T+1 日收盘后的确切持仓
-        backtest_df['actual_holding'] = backtest_df.apply(determine_execution, axis=1)
+            for i in range(1, len(group)):
+                prev_h = holdings[i-1]
+                target_s = signals[i]
+                
+                # 判定调仓逻辑
+                if target_s > prev_h and limit_ups[i]:   # 拟增持/买入，但涨停：调仓失败，维持原仓位
+                    holdings[i] = prev_h
+                elif target_s < prev_h and limit_downs[i]: # 拟减持/卖出，但跌停：调仓失败，维持原仓位
+                    holdings[i] = prev_h
+                else:                                     # 正常执行调仓
+                    holdings[i] = target_s
+            return pd.Series(holdings, index=group.index)
+
+        backtest_df['actual_holding'] = backtest_df.groupby('symbol', group_keys=False).apply(compute_actual_holdings)
         
         # 5. 计算组合日收益率 (必须使用前一日收盘后的持仓 * 今日收益率)
         # actual_holding 在 D-1 日结束时确定，决定了 D 日的收益
         backtest_df['holding_for_ret'] = backtest_df.groupby('symbol')['actual_holding'].shift(1).fillna(0)
         backtest_df['stock_ret'] = backtest_df['pct_chg_calc'] * backtest_df['holding_for_ret']
         
-        # 6. 计算摩擦成本 (仅在 actual_holding 发生变化时扣除)
-        backtest_df['weight_diff'] = backtest_df.groupby('symbol')['actual_holding'].diff().abs().fillna(0)
-        daily_turnover = backtest_df.groupby('date')['weight_diff'].sum()
+        # 6. 计算摩擦成本 (A 股特色：买入佣金+滑点，卖出佣金+滑点+印花税)
+        backtest_df['weight_diff'] = backtest_df.groupby('symbol')['actual_holding'].diff().fillna(0)
+        
+        # 分离买入和卖出换手
+        backtest_df['buy_turnover'] = backtest_df['weight_diff'].clip(lower=0)
+        backtest_df['sell_turnover'] = backtest_df['weight_diff'].clip(upper=0).abs()
+        
+        daily_buy = backtest_df.groupby('date')['buy_turnover'].sum()
+        daily_sell = backtest_df.groupby('date')['sell_turnover'].sum()
         
         comm = self.config['backtest'].get('commission', 0.00015)
         tax = self.config['backtest'].get('tax', 0.001)
         slippage = self.config['backtest'].get('slippage', 0.0001)
-        cost_rate = comm + slippage + (tax * 0.5)
-        daily_cost = daily_turnover * cost_rate
+        
+        # 买入成本：佣金 + 滑点
+        # 卖出成本：佣金 + 滑点 + 印花税
+        daily_cost = (daily_buy * (comm + slippage)) + (daily_sell * (comm + slippage + tax))
         
         portfolio_daily_ret = backtest_df.groupby('date')['stock_ret'].sum() - daily_cost
+        
+        # 确保回测首日有起始点 (1.0)
         portfolio_nav = (1 + portfolio_daily_ret).cumprod()
+        if not portfolio_nav.empty:
+            # 补齐起始日，使 NAV 曲线更美观
+            first_date = portfolio_nav.index[0] - pd.Timedelta(days=1)
+            portfolio_nav[first_date] = 1.0
+            portfolio_nav = portfolio_nav.sort_index()
 
         # --- 核心改进：计算逐笔交易胜率与盈亏比 ---
         # 识别每一笔交易的盈亏 (Trade-level Analysis)
         # 我们定义一笔交易为：一只股票从权重变为非零到归零的过程
-        backtest_df['holding'] = (backtest_df['actual_weight'] > 0).astype(int)
-        backtest_df['trade_id'] = backtest_df.groupby('symbol')['holding'].diff().abs().cumsum()
+        backtest_df['holding_flag'] = (backtest_df['actual_holding'] > 0).astype(int)
+        backtest_df['trade_id'] = backtest_df.groupby('symbol')['holding_flag'].diff().abs().cumsum()
         
         # 仅分析持仓期间的数据
-        trades = backtest_df[backtest_df['holding'] > 0].copy()
+        trades = backtest_df[backtest_df['holding_flag'] > 0].copy()
         if not trades.empty:
             # 计算每笔交易的累积收益
             trade_returns = trades.groupby(['symbol', 'trade_id'])['pct_chg_calc'].apply(lambda x: (1 + x).prod() - 1)
