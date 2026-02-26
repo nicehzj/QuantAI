@@ -11,76 +11,59 @@ sys.path.append(str(project_root))
 
 from src.utils.helpers import load_config, setup_logging
 from src.factors.factor_engine import FactorEngine
-from src.optimization.optimizer import StrategyOptimizer
 from src.data.database import QuantDatabase
 
-def run_fast_pipeline():
+def run_adaptive_pipeline():
     """
-    快速寻优工作流：跳过数据同步，直接进行因子计算与回测
+    全自适应专家管线：大盘环境感知 + 动态因子权重 + 专家级止损
     """
     cfg = load_config()
     logger = setup_logging(cfg)
     
     logger.info("="*60)
-    logger.info("QuantAI Gemini 快速寻优管线 (已跳过数据同步)")
+    logger.info("QuantAI Gemini 全自适应专家管线")
+    logger.info("环境识别: Bull/Bear/Sideways | 因子: 趋势/反转/止损")
     logger.info("="*60)
 
-    # 1. 因子与行情准备 (直接从现有数据库读取)
+    # 1. 因子与行情准备 (全量因子矩阵)
     engine = FactorEngine(cfg)
     logger.info("正在提取全市场因子矩阵与行情数据 (2020年至今)...")
     factor_matrix = engine.get_factor_matrix(start_date="2020-01-01")
     price_df = engine.load_clean_data(start_date="2020-01-01")
     
-    # 2. 加载基准数据 (沪深300)
+    # 2. 加载基准数据
     db = QuantDatabase(cfg)
     bench_df = db.read_query("SELECT * FROM benchmark_daily WHERE symbol = 'sh.000300'")
     db.close()
 
-    if bench_df.empty:
-        logger.warning("未找到基准数据 (sh.000300)，将使用绝对收益评价。")
-        bench_df = None
-
-    # 3. 定义寻优空间 (网格寻优范围)
-    weight_ranges = {
-        'mom_20': [0.3, 0.5],
-        'vol_20': [-0.2, -0.1],
-        'bias_20': [-0.1, 0.0],
-        'vol_ratio': [0.1, 0.2]
-    }
-
-    # 4. 执行自动寻优 (基于 T+2/涨跌停/摩擦成本 的最新逻辑)
-    optimizer = StrategyOptimizer(cfg)
-    best_report, best_factor, _ = optimizer.grid_search_weights(
-        factor_matrix, price_df, weight_ranges, benchmark_df=bench_df
+    # 3. 执行自适应策略
+    from src.strategy.strategy_base import MultiFactorStrategy
+    from src.backtest.backtest_engine import BacktestEngine
+    
+    strat = MultiFactorStrategy(cfg)
+    # 核心：策略类内部已实现 Regime Detection 和动态调仓
+    positions = strat.calculate_positions(
+        factor_matrix, 
+        price_df, 
+        target_count=20, 
+        benchmark_df=bench_df,
+        stop_loss_pct=0.08,
+        min_hold_days=10  # 强制锁仓 10 个交易日
     )
+    
+    # 4. 运行回测
+    bt = BacktestEngine(cfg)
+    final_perf, nav_series = bt.run_vectorized_backtest(positions, price_df, benchmark_df=bench_df)
 
-    # 5. 使用最佳参数进行最终验证回测
-    if best_report:
-        from src.strategy.strategy_base import MultiFactorStrategy
-        from src.backtest.backtest_engine import BacktestEngine
-        
-        strat = MultiFactorStrategy(cfg, factor_weights=best_report['weights'])
-        signals = strat.generate_signals(factor_matrix)
-        positions = strat.calculate_positions(signals, target_count=10)
-        
-        bt = BacktestEngine(cfg)
-        final_perf, nav_series = bt.run_vectorized_backtest(positions, price_df, benchmark_df=bench_df)
-
-        # 6. 输出最终战果报告
-        logger.info("\n" + "*"*60)
-        logger.info("🏆 快速寻优最终报告 (严格 A 股实操逻辑) 🏆")
-        logger.info("*"*60)
-        logger.info(f"📍 最佳核心因子: {best_factor}")
-        logger.info(f"📍 最优权重配置: {best_report['weights']}")
-        logger.info("-" * 40)
-        logger.info("📊 核心绩效指标 (已扣除交易费用/摩擦):")
-        for k, v in final_perf.items():
-            logger.info(f"   - {k}: {v}")
-        logger.info("*"*60 + "\n")
-    else:
-        logger.error("寻优未找到有效结果。")
-        
+    # 5. 输出最终战果报告
+    logger.info("\n" + "*"*60)
+    logger.info("🏆 全自适应策略回测报告 🏆")
+    logger.info("*"*60)
+    for k, v in final_perf.items():
+        logger.info(f"   - {k}: {v}")
+    logger.info("*"*60 + "\n")
+    
     engine.close()
 
 if __name__ == "__main__":
-    run_fast_pipeline()
+    run_adaptive_pipeline()

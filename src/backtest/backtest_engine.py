@@ -17,24 +17,45 @@ class BacktestEngine:
         
         # 1. 预处理数据
         price_df = price_df.copy().sort_values(['symbol', 'date'])
+        # 强制类型转换，防御字符串输入
+        for col in ['close', 'pct_chg']:
+            if col in price_df.columns:
+                price_df[col] = pd.to_numeric(price_df[col], errors='coerce')
+        
         price_df['date'] = pd.to_datetime(price_df['date'])
         positions['date'] = pd.to_datetime(positions['date'])
         
-        # 2. 核心改进：修正信号时空错位 (先对齐全量行情，再在连续时间轴上平移)
+        # 2. 核心改进：修正信号时空错位
         backtest_df = pd.merge(price_df, positions[['date', 'symbol', 'target_weight']], on=['date', 'symbol'], how='left')
-        backtest_df['target_weight'] = backtest_df.groupby('symbol')['target_weight'].ffill().fillna(0)
         
-        # 3. 计算并清洗股票日收益率 (遵循 A 股涨跌停规则)
-        backtest_df['pct_chg_calc'] = backtest_df.groupby('symbol')['close'].pct_change()
+        # 修正：千万不能使用 ffill()，否则不选中的股票会一直保留之前的权重，导致总权重爆炸
+        # 只有在 signals 采样频率低于价格采样频率时才需要考虑 fill 逻辑，但在当前日频工作流中，未选中的应为 0
+        backtest_df['target_weight'] = backtest_df['target_weight'].fillna(0)
         
+        # 调试：校验每日总权重是否在合理范围 (0~1.1)
+        daily_total_weight = backtest_df.groupby('date')['target_weight'].sum()
+        max_total_w = daily_total_weight.max()
+        if max_total_w > 1.0001:
+            self.logger.warning(f"检测到异常总权重: {max_total_w:.2f}，请检查选股逻辑。")
+        
+        # 3. 核心改进：收益率计算逻辑。优先使用数据库中的 pct_chg (百分比形式，需除以 100)
+        # 这样可以利用 BaoStock 已经处理好的复权收益率，比手动计算 close.pct_change 更可靠
+        if 'pct_chg' in backtest_df.columns:
+            backtest_df['pct_chg_calc'] = backtest_df['pct_chg'] / 100.0
+        else:
+            backtest_df['pct_chg_calc'] = backtest_df.groupby('symbol')['close'].pct_change()
+        
+        # 强力防御：全局异常值截断 (A 股单日真实波动极少超过 30%)
+        # 任何超过 35% 的波动都视为数据源异常，将其重置为 0，防止复利爆炸
+        backtest_df.loc[backtest_df['pct_chg_calc'] > 0.35, 'pct_chg_calc'] = 0.0
+        backtest_df.loc[backtest_df['pct_chg_calc'] < -0.35, 'pct_chg_calc'] = 0.0
+
         # 定义 A 股差异化涨跌停限制
         def get_limit(symbol):
             if symbol.startswith(('sh.68', 'sz.30')): return 0.20 # 科创/创业板
-            if symbol.startswith('bj'): return 0.30              # 北交所
             return 0.10                                          # 主板
             
         # 应用涨跌停截断 (防止脏数据或除权错误)
-        # 我们允许 0.5% 的溢出以容忍数据计算误差
         backtest_df['limit'] = backtest_df['symbol'].apply(get_limit)
         backtest_df.loc[backtest_df['pct_chg_calc'] > backtest_df['limit'] + 0.005, 'pct_chg_calc'] = backtest_df['limit']
         backtest_df.loc[backtest_df['pct_chg_calc'] < -backtest_df['limit'] - 0.005, 'pct_chg_calc'] = -backtest_df['limit']
@@ -98,6 +119,13 @@ class BacktestEngine:
         
         portfolio_daily_ret = backtest_df.groupby('date')['stock_ret'].sum() - daily_cost
         
+        # --- 最终安全阀：限制组合日收益率 ---
+        # A 股全仓即使全涨停，收益率也不应超过 20%。如果超过，说明数据或逻辑有严重错误。
+        excessive_ret_dates = portfolio_daily_ret[portfolio_daily_ret > 0.21].index
+        if not excessive_ret_dates.empty:
+            self.logger.warning(f"检测到 {len(excessive_ret_dates)} 个日期的组合收益率异常 (>20%)，已强制截断。样本日期: {excessive_ret_dates[:3].tolist()}")
+            portfolio_daily_ret = portfolio_daily_ret.clip(lower=-0.21, upper=0.21)
+
         # 确保回测首日有起始点 (1.0)
         portfolio_nav = (1 + portfolio_daily_ret).cumprod()
         if not portfolio_nav.empty:

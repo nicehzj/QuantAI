@@ -33,23 +33,37 @@ class FactorEngine:
 
     def calculate_technical_factors(self, df):
         """
-        计算基础技术因子 (向量化)
+        计算基础技术因子与价值因子 (向量化)
         """
-        self.logger.info("开始计算基础技术因子...")
+        self.logger.info("开始计算基础因子矩阵 (含价值指标)...")
         df = df.sort_values(['symbol', 'date'])
         
-        # 1. 动量因子 (5日/20日收益率)
+        # 核心：数据类型强制转换 (防御数据库字符串类型)
+        num_cols = ['open', 'high', 'low', 'close', 'volume', 'amount', 'pct_chg', 'turnover', 'peTTM', 'pbMRQ']
+        for col in num_cols:
+            if col in df.columns:
+                df[col] = pd.to_numeric(df[col], errors='coerce')
+
+        # 1. 动量因子
         df['mom_5'] = df.groupby('symbol')['close'].pct_change(periods=5)
         df['mom_20'] = df.groupby('symbol')['close'].pct_change(periods=20)
+        df['mom_60'] = df.groupby('symbol')['close'].pct_change(periods=60)
         
-        # 2. 波动率因子 (20日收盘价波动率)
+        # 2. 波动率因子
         df['vol_20'] = df.groupby('symbol')['pct_chg'].transform(lambda x: x.rolling(20).std())
         
-        # 3. 均线乖离度 (Bias)
+        # 3. 均线乖离度
         df['ma_20'] = df.groupby('symbol')['close'].transform(lambda x: x.rolling(20).mean())
         df['bias_20'] = (df['close'] - df['ma_20']) / df['ma_20']
+        df['ma_60'] = df.groupby('symbol')['close'].transform(lambda x: x.rolling(60).mean())
+        df['bias_60'] = (df['close'] - df['ma_60']) / df['ma_60']
         
-        # 4. 成交量因子 (5日/20日成交额比值)
+        # 4. 价值因子 (低估值溢价)
+        # PE/PB 越小得分越高，故取负值
+        df['pe_val'] = -df['peTTM'] 
+        df['pb_val'] = -df['pbMRQ']
+        
+        # 5. 成交量因子
         df['vol_ma_5'] = df.groupby('symbol')['amount'].transform(lambda x: x.rolling(5).mean())
         df['vol_ma_20'] = df.groupby('symbol')['amount'].transform(lambda x: x.rolling(20).mean())
         df['vol_ratio'] = df['vol_ma_5'] / df['vol_ma_20']
@@ -58,14 +72,16 @@ class FactorEngine:
 
     def get_factor_matrix(self, start_date=None, end_date=None, apply_preprocessing=True):
         """
-        获取因子矩阵并进行预处理 (横截面去极值与标准化)
+        获取因子矩阵并进行预处理
         """
         raw_df = self.load_clean_data(start_date, end_date)
         factor_df = self.calculate_technical_factors(raw_df)
         
-        # 筛选有效因子列 (mom_5, mom_20, vol_20, bias_20, vol_ratio)
-        factor_cols = ['date', 'symbol', 'mom_5', 'mom_20', 'vol_20', 'bias_20', 'vol_ratio']
-        matrix = factor_df[factor_cols].dropna()
+        # 核心 Alpha 因子列表
+        factor_cols = ['date', 'symbol', 'mom_5', 'mom_20', 'mom_60', 'vol_20', 'bias_20', 'bias_60', 'vol_ratio', 'pe_val', 'pb_val']
+        # 仅选取存在的列
+        available_cols = [c for c in factor_cols if c in factor_df.columns]
+        matrix = factor_df[available_cols].dropna()
         
         if apply_preprocessing:
             # 执行横截面标准化处理
@@ -74,11 +90,9 @@ class FactorEngine:
         # 强制重置索引，确保 date 和 symbol 都在列中
         if 'date' not in matrix.columns:
             matrix = matrix.reset_index()
-            # 如果 reset_index 产生了 'index' 列，重命名为 'date'
-            if 'index' in matrix.columns:
-                matrix = matrix.rename(columns={'index': 'date'})
             
-        self.logger.info(f"最终因子矩阵列名: {matrix.columns.tolist()}")
+        alpha_factors = [c for c in matrix.columns if c not in ['date', 'symbol']]
+        self.logger.info(f"因子矩阵构建完成。索引列: ['date', 'symbol'], 核心 Alpha 因子: {alpha_factors}")
         return matrix
 
     def close(self):

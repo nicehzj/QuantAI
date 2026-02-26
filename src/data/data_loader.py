@@ -38,45 +38,41 @@ class DataLoader:
 
     def fetch_historical_universe(self, date="2015-01-01", universe="all"):
         """
-        全量股票获取：涵盖沪深主板、创业板、科创板、北交所及已退市股
+        全量股票获取：涵盖沪深主板、创业板、科创板及已退市股 (不含北交所)
         """
-        self.logger.info(f"正在构建 A 股全市场种子列表 (含北交所)...")
+        self.logger.info(f"正在构建沪深 A 股全市场种子列表...")
         data_list = []
         
         # 1. 尝试获取基准日期的官方快照
         rs = bs.query_all_stock(day=date)
         while (rs.error_code == '0') & rs.next():
             row = rs.get_row_data()
-            if row[0].startswith(('sh.', 'sz.', 'bj.')):
+            if row[0].startswith(('sh.', 'sz.')):
                 data_list.append(row[0])
         
         # 2. 暴力补全：强制扫描所有核心号段，确保 100% 覆盖
-        # 即使快照接口漏掉，号段遍历也会将其捕获
         prefixes = [
             ('sh', range(600000, 606000)), # 沪市主板
             ('sz', range(0, 3000)),        # 深市主板/中小板
             ('sz', range(300000, 301500)), # 创业板
-            ('sh', range(688000, 689500)), # 科创板
-            ('bj', range(830000, 840000)), # 北交所 83段
-            ('bj', range(870000, 880000)), # 北交所 87段
-            ('bj', range(430000, 440000))  # 北交所 43段
+            ('sh', range(688000, 689500))  # 科创板
         ]
         
         for prefix, r in prefixes:
             data_list.extend([f"{prefix}.{i:06d}" for i in r])
         
         full_list = sorted(list(set(data_list)))
-        self.logger.info(f"全市场种子列表构建完成，总计尝试扫描: {len(full_list)} 个代码。")
+        self.logger.info(f"种子列表构建完成，总计尝试扫描: {len(full_list)} 个代码。")
         return full_list
 
     def download_daily_data(self, symbol):
         """
-        核心下载函数：获取 2010 年至今的后复权数据
+        核心下载函数：获取 2010 年至今的后复权数据 (含估值指标)
         """
         try:
             rs = bs.query_history_k_data_plus(
                 symbol,
-                "date,open,high,low,close,volume,amount,pctChg,adjustflag,turn",
+                "date,open,high,low,close,volume,amount,pctChg,adjustflag,turn,peTTM,pbMRQ",
                 start_date=self.start_date,
                 end_date=self.last_trading_day,
                 frequency="d",
@@ -97,17 +93,18 @@ class DataLoader:
         except Exception:
             return None
 
-    def update_database(self, symbols=None, batch_size=100):
+    def update_database(self, symbols=None, batch_size=100, force=False):
         if symbols is None:
             symbols = self.fetch_historical_universe()
             
-        # 1. 断点续传逻辑：跳过本地已存在的
+        # 1. 断点续传逻辑
         existing_stocks = []
-        try:
-            existing_stocks = self.db.get_all_stocks()
-            self.logger.info(f"检测到本地已存有 {len(existing_stocks)} 只股票，准备续传...")
-        except:
-            pass
+        if not force:
+            try:
+                existing_stocks = self.db.get_all_stocks()
+                self.logger.info(f"检测到本地已存有 {len(existing_stocks)} 只股票，准备续传...")
+            except:
+                pass
             
         todo_symbols = [s for s in symbols if s not in existing_stocks]
         total = len(todo_symbols)
@@ -119,7 +116,7 @@ class DataLoader:
         # 2. 执行分批下载
         batch_data = []
         count = 0
-        pbar = tqdm(total=total, desc="全市场数据同步 (含北交所/退市股)")
+        pbar = tqdm(total=total, desc="全市场数据同步 (含退市股)")
         
         for i, symbol in enumerate(todo_symbols):
             df = self.download_daily_data(symbol)

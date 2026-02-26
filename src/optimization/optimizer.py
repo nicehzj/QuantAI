@@ -29,10 +29,18 @@ class StrategyOptimizer:
         for weights in tqdm(weight_combinations, desc="寻优进度"):
             current_weights = dict(zip(factors, weights))
             
-            # 运行策略
+            # 运行策略 (专家模式：买入 1.2, 卖出 0.0, 止损 8%, 择时开启)
             strat = MultiFactorStrategy(self.config, factor_weights=current_weights)
             signals = strat.generate_signals(factor_matrix)
-            positions = strat.calculate_positions(signals, target_count=10)
+            positions = strat.calculate_positions(
+                signals, 
+                price_df, 
+                target_count=20, 
+                buy_threshold=1.2, 
+                sell_threshold=0.0,
+                stop_loss_pct=0.08,
+                benchmark_df=benchmark_df
+            )
             
             # 运行回测
             perf, _ = self.engine.run_vectorized_backtest(positions, price_df, benchmark_df=benchmark_df)
